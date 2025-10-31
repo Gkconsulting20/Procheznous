@@ -55,6 +55,40 @@ body {
     margin-bottom: 1rem;
 }
 
+/* Amélioration mobile */
+@media (max-width: 768px) {
+    .hero-section h2 {
+        font-size: 1.75rem;
+    }
+    
+    .container {
+        padding: 1rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .logo-img {
+        height: 40px;
+    }
+    
+    .professional-card {
+        padding: 1rem;
+    }
+    
+    body {
+        font-size: 14px;
+    }
+    
+    .btn {
+        font-size: 14px;
+        padding: 0.6rem 1.2rem;
+    }
+}
+
 .hero-section p {
     font-size: 1.2rem;
     color: var(--text-light);
