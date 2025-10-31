@@ -881,6 +881,21 @@ def init_db():
     except:
         pass
 
+
+
+@app.route('/debug_session')
+def debug_session():
+    """Route temporaire pour debug"""
+    import json
+    session_data = {
+        'user_id': session.get('user_id'),
+        'role': session.get('role'),
+        'plan': session.get('plan'),
+        'all_keys': list(session.keys())
+    }
+    return f"<pre>{json.dumps(session_data, indent=2)}</pre>"
+
+
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5000, debug=True)
