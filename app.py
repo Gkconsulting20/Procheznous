@@ -628,6 +628,10 @@ def admin_verification():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
+    if session.get('role') != 'admin':
+        flash('Accès refusé. Cette page est réservée aux administrateurs.', 'error')
+        return redirect(url_for('dashboard'))
+    
     conn = get_db()
     documents_attente = conn.execute('''
         SELECT d.*, u.name, u.email, u.categorie
@@ -643,6 +647,10 @@ def admin_verification():
 def valider_document(doc_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
+    
+    if session.get('role') != 'admin':
+        flash('Accès refusé. Cette action est réservée aux administrateurs.', 'error')
+        return redirect(url_for('dashboard'))
     
     action = request.form.get('action')
     conn = get_db()

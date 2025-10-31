@@ -23,14 +23,15 @@ PRO CHEZ NOUS is a French professional appointment booking platform designed for
 
 ### Core Design Decisions
 - **UI/UX**: Modern, responsive design with a RED theme, card-based layouts, and custom logos. Features intuitive dashboards for both clients and professionals.
-- **Security**: Robust security measures including bcrypt password hashing, environment variable for secret key, and comprehensive form validation.
+- **Security**: Robust security measures including bcrypt password hashing, environment variable for secret key, comprehensive form validation, and **role-based access control (RBAC)** with three distinct roles: 'user' (client), 'pro' (professional), and 'admin' (administrator). Admin panel is strictly restricted to users with 'admin' role.
 - **Freemium Model**: Implements a "gratuit" and "premium" subscription system (1000 FCFA/month - prix de lancement), gating advanced features like internal messaging, favorites, enriched profiles, advanced statistics, and geolocation. Payment via T-Money or Flooz.
 - **Geolocation**: Premium-only feature utilizing HTML5 Geolocation API, Haversine formula for distance calculation, and sorting professionals by proximity.
 - **Professional Verification**: System for professionals to upload verification documents, with statuses and a "✓ Vérifié" badge for verified profiles.
 - **Scalability**: Designed with a clear project structure and plans for production-grade WSGI server (Gunicorn).
 
 ### Feature Specifications
-- **User Management**: Secure registration and authentication for both clients and professionals using **email OR phone number**. Password recovery with secure token-based system (1-hour expiration) supporting both email and phone number.
+- **User Management**: Secure registration and authentication for both clients and professionals using **email OR phone number**. Password recovery with secure token-based system (1-hour expiration) supporting both email and phone number. **Admin accounts** can be created using `create_admin.py` script with full platform management privileges.
+- **Admin Panel (Admin-only)**: Accessible only to users with 'admin' role. Features document verification management for professional accounts.
 - **Professional Discovery**: Browsing, advanced search, and filtering by name, city, category, and minimum rating. Professionals are sorted by rating by default, and by proximity for premium users.
 - **Appointment Management**: Professionals manage time slots, clients book and cancel appointments, with automatic slot restoration.
 - **Rating System**: Clients can rate and review professionals.
@@ -64,6 +65,15 @@ The platform supports a wide range of manual trade categories (e.g., Plomberie, 
 - **SendGrid API**: Email delivery service for password reset and notifications (optional).
 - **Twilio API**: SMS service for phone verification (optional).
 - **Requests**: HTTP library for API integrations.
+
+## Recent Changes (October 31, 2025)
+
+### Security Enhancement - Admin Access Control
+- **Status**: ✅ Implemented
+- **Change**: Restricted admin panel access to users with 'admin' role only
+- **Files**: `app.py`, `templates/base.html`, `create_admin.py`
+- **Details**: Admin verification page and document validation now require 'admin' role. Unauthorized access attempts are blocked and logged.
+- **Usage**: Run `python create_admin.py` to create admin accounts
 
 ## Recent Integrations (October 2024)
 
