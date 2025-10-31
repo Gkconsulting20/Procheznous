@@ -23,11 +23,15 @@
             <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">📊 Tableau de bord</a></li>
             {% if session.role == 'user' %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('view_professionals') }}">👥 Professionnels</a></li>
+            {% if session.plan == 'premium' %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('favoris') }}">⭐ Favoris</a></li>
+            {% endif %}
             {% elif session.role == 'pro' %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('verification') }}">🔐 Vérification</a></li>
             {% endif %}
+            {% if session.plan == 'premium' %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('messages') }}">💬 Messages</a></li>
+            {% endif %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('subscription') }}">💎 Abonnement</a></li>
             {% if session.role == 'admin' %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_verification') }}">🔐 Admin</a></li>

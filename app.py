@@ -123,6 +123,7 @@ def login():
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
             session['user_id'] = user['id']
             session['role'] = user['role']
+            session['plan'] = user['plan']
             flash(f'Bienvenue {user["name"]}!', 'success')
             return redirect(url_for('dashboard'))
         else:
