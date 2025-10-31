@@ -383,37 +383,36 @@ def upgrade_premium():
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
     
     if request.method == 'POST':
-        if fedapay_service.is_configured():
-            user_data = {
-                'id': user['id'],
-                'name': user['name'],
-                'email': user['email'],
-                'phone': user['phone']
-            }
-            
-            callback_url = url_for('fedapay_callback', _external=True)
-            
-            result = fedapay_service.create_transaction(
-                user_data, 
-                amount=1000,
-                description="Abonnement Premium PRO CHEZ NOUS - 1000 FCFA/mois",
-                callback_url=callback_url
-            )
-            
-            if result['success']:
-                return render_template('payment_redirect.html', 
-                                     payment_url=result['payment_url'],
-                                     transaction_id=result['transaction_id'])
-            else:
-                flash(f"Erreur lors de la création du paiement: {result['error']}", 'error')
-                return redirect(url_for('subscription'))
+        if not fedapay_service.is_configured():
+            flash('⚠️ Les paiements sont temporairement désactivés. Nous configurons actuellement FedaPay pour accepter T-Money, Flooz et autres moyens de paiement. Revenez bientôt !', 'warning')
+            return redirect(url_for('subscription'))
+        
+        user_data = {
+            'id': user['id'],
+            'name': user['name'],
+            'email': user['email'],
+            'phone': user['phone']
+        }
+        
+        callback_url = url_for('fedapay_callback', _external=True)
+        
+        result = fedapay_service.create_transaction(
+            user_data, 
+            amount=1000,
+            description="Abonnement Premium PRO CHEZ NOUS - 1000 FCFA/mois",
+            callback_url=callback_url
+        )
+        
+        if result['success']:
+            return render_template('payment_redirect.html', 
+                                 payment_url=result['payment_url'],
+                                 transaction_id=result['transaction_id'])
         else:
-            conn.execute('UPDATE users SET plan = ? WHERE id = ?', ('premium', session['user_id']))
-            conn.commit()
-            flash('Félicitations! Vous êtes maintenant membre Premium 🌟 (Mode démo - FedaPay non configuré)', 'success')
-            return redirect(url_for('dashboard'))
+            flash(f"Erreur lors de la création du paiement: {result['error']}", 'error')
+            return redirect(url_for('subscription'))
     
-    return render_template('upgrade_premium.html', user=user)
+    fedapay_configured = fedapay_service.is_configured()
+    return render_template('upgrade_premium.html', user=user, fedapay_configured=fedapay_configured)
 
 @app.route('/profil/<int:pro_id>')
 def profil(pro_id):

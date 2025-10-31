@@ -41,11 +41,25 @@
                     </div>
                 </div>
                 
+                {% if fedapay_configured %}
                 <form method="POST" action="{{ url_for('upgrade_premium') }}" class="text-center">
                     <button type="submit" class="btn btn-danger btn-lg">
                         💳 Payer 1000 FCFA - Passer au Premium
                     </button>
                 </form>
+                {% else %}
+                <div class="alert alert-warning text-center">
+                    <h5>⚠️ Paiements temporairement désactivés</h5>
+                    <p>Nous configurons actuellement notre système de paiement FedaPay pour accepter :</p>
+                    <p><strong>T-Money, Flooz, MTN Mobile Money, Orange Money et cartes bancaires</strong></p>
+                    <p class="mb-0"><em>Les paiements seront bientôt disponibles. Revenez dans quelques jours !</em></p>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-secondary btn-lg" disabled>
+                        💳 Paiement en cours de configuration
+                    </button>
+                </div>
+                {% endif %}
                 
                 <div class="text-center mt-3">
                     <a href="{{ url_for('dashboard') }}" class="text-muted">

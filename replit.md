@@ -90,12 +90,13 @@ The platform supports a wide range of manual trade categories (e.g., Plomberie, 
 - **Files**: `utils.py`
 
 ### FedaPay Payment Integration
-- **Status**: 🔧 Configured (requires API keys)
+- **Status**: ⚠️ Temporairement désactivé (en attente de configuration)
 - **Purpose**: Accept Premium subscription payments (1000 FCFA/month - prix de lancement)
 - **Payment Methods**: T-Money, Flooz, MTN, Orange Money, cards
 - **Mode**: Sandbox (test) and Live (production) support
 - **Files**: `fedapay_service.py`, `templates/upgrade_premium.html`, `templates/payment_redirect.html`
 - **Configuration**: Set `FEDAPAY_SECRET_KEY`, `FEDAPAY_PUBLIC_KEY`, `FEDAPAY_ENV` in environment
+- **Sécurité**: Mode démo désactivé - Aucun paiement ne peut être effectué sans configuration FedaPay complète
 
 ### SendGrid Email Integration
 - **Status**: 🔧 Configured (requires API key)
