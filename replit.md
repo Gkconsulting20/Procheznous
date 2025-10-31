@@ -68,11 +68,17 @@ The platform supports a wide range of manual trade categories (e.g., Plomberie, 
 
 ## Recent Changes (October 31, 2025)
 
-### Security Enhancement - Admin Access Control
-- **Status**: ✅ Implemented
-- **Change**: Restricted admin panel access to users with 'admin' role only
-- **Files**: `app.py`, `templates/base.html`, `create_admin.py`
-- **Details**: Admin verification page and document validation now require 'admin' role. Unauthorized access attempts are blocked and logged.
+### Security Enhancement - Role-Based Access Control (RBAC)
+- **Status**: ✅ Implemented & Deployed
+- **Change**: Complete implementation of role-based and plan-based access control
+- **Files**: `app.py` (line 126), `templates/base.html` (lines 26-38)
+- **Details**: 
+  - Session now includes `plan` attribute (added during login)
+  - Admin panel visible ONLY to users with `role='admin'`
+  - Messages & Favoris tabs visible ONLY to users with `plan='premium'`
+  - Routes already protected with server-side checks
+  - Session invalidation required after deployment to apply changes
+- **Deployment**: Successfully deployed to PythonAnywhere (www.pro-chez-nous.com)
 - **Usage**: Run `python create_admin.py` to create admin accounts
 
 ## Recent Integrations (October 2024)
