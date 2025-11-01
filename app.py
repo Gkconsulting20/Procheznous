@@ -570,7 +570,7 @@ def valider_verification(pro_id):
         return redirect(url_for('login'))
     
     conn = get_db()
-    documents = conn.execute('SELECT COUNT(*) as nb FROM documents_verification WHERE pro_id = ? AND statut = "valide"', (pro_id,)).fetchone()
+    documents = conn.execute('SELECT COUNT(*) as nb FROM documents_verification WHERE user_id = ? AND statut = "valide"', (pro_id,)).fetchone()
     
     if documents['nb'] > 0:
         conn.execute('UPDATE users SET statut_verification = ? WHERE id = ?', ('verifie', pro_id))
@@ -592,7 +592,7 @@ def admin_verification():
     documents_attente = conn.execute('''
         SELECT d.*, u.name, u.email, u.categorie
         FROM documents_verification d
-        JOIN users u ON d.pro_id = u.id
+        JOIN users u ON d.user_id = u.id
         WHERE d.statut = 'en_attente'
         ORDER BY d.date_upload DESC
     ''').fetchall()
@@ -613,9 +613,9 @@ def valider_document(doc_id):
     
     if action == 'valider':
         conn.execute('UPDATE documents_verification SET statut = ? WHERE id = ?', ('valide', doc_id))
-        document = conn.execute('SELECT pro_id FROM documents_verification WHERE id = ?', (doc_id,)).fetchone()
+        document = conn.execute('SELECT user_id FROM documents_verification WHERE id = ?', (doc_id,)).fetchone()
         if document:
-            conn.execute('UPDATE users SET statut_verification = ? WHERE id = ?', ('verifie', document['pro_id']))
+            conn.execute('UPDATE users SET statut_verification = ? WHERE id = ?', ('verifie', document['user_id']))
         flash('Document validé avec succès!', 'success')
     elif action == 'refuser':
         conn.execute('UPDATE documents_verification SET statut = ? WHERE id = ?', ('refuse', doc_id))
