@@ -22,7 +22,9 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_db():
-    conn = sqlite3.connect('database.db')
+    # Chemin absolu pour PythonAnywhere
+    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.db')
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     
     # OPTIMISATIONS PRODUCTION
