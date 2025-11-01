@@ -112,7 +112,7 @@ def login():
             user = conn.execute('SELECT * FROM users WHERE email = ? OR phone = ?', 
                               (identifier, identifier)).fetchone()
         
-        if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+        if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8') if isinstance(user['password'], str) else user['password']):
             session['user_id'] = user['id']
             session['role'] = user['role']
             session['plan'] = user['plan']
