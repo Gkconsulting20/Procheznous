@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Gestion des Catégories{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>🏷️ Gestion des Catégories de Métiers</h2>
+            <p class="text-muted">Gérez les catégories professionnelles disponibles sur la plateforme</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ url_for('admin_add_category') }}" class="btn btn-primary">➕ Nouvelle Catégorie</a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Retour au Tableau de Bord</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Ordre</th>
+                            <th>Icône</th>
+                            <th>Nom</th>
+                            <th>Statut</th>
+                            <th>Professionnels</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cat in categories %}
+                        <tr {% if cat.actif == 0 %}class="table-secondary"{% endif %}>
+                            <td>{{ cat.ordre }}</td>
+                            <td><span style="font-size: 1.5rem;">{{ cat.icone }}</span></td>
+                            <td>{{ cat.nom }}</td>
+                            <td>
+                                {% if cat.actif == 1 %}
+                                <span class="badge bg-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Désactivée</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ cat.nb_pros }}</span>
+                                {% if cat.nb_pros > 0 %}
+                                <small class="text-muted">pro{{ 's' if cat.nb_pros > 1 else '' }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('admin_edit_category', id=cat.id) }}" class="btn btn-sm btn-outline-primary">✏️ Modifier</a>
+                                    <form method="POST" action="{{ url_for('admin_toggle_category', id=cat.id) }}" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-outline-warning">
+                                            {% if cat.actif == 1 %}🔕 Désactiver{% else %}✅ Activer{% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin_delete_category', id=cat.id) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">🗑️ Supprimer</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info mt-4">
+        <strong>ℹ️ Informations :</strong>
+        <ul class="mb-0">
+            <li>Les catégories désactivées ne sont plus visibles pour les nouveaux professionnels</li>
+            <li>Vous ne pouvez pas supprimer une catégorie utilisée par des professionnels</li>
+            <li>L'ordre détermine l'affichage dans les listes déroulantes</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
