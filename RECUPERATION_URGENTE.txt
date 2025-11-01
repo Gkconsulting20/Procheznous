@@ -1,0 +1,79 @@
+═══════════════════════════════════════════════════════════════════
+🚨 RÉCUPÉRATION URGENTE - PRO CHEZ NOUS
+PythonAnywhere Production - www.pro-chez-nous.com
+═══════════════════════════════════════════════════════════════════
+
+⚠️ PROBLÈME : L'application ne fonctionne plus après modification
+
+🔧 SOLUTION RAPIDE (5 minutes)
+
+═══════════════════════════════════════════════════════════════════
+OPTION 1 : RESTAURER LA VERSION STABLE (RECOMMANDÉ)
+═══════════════════════════════════════════════════════════════════
+
+Cette option remet l'application dans l'état où elle fonctionnait.
+
+1️⃣ CONNEXION
+   → www.pythonanywhere.com
+   → Compte : gkconsulting
+   → Consoles → Bash
+
+2️⃣ RESTAURER LA SAUVEGARDE
+   Copiez-collez cette commande :
+
+cd /home/gkconsulting/prochenous2
+cp app.py.backup_URGENT app.py
+echo "✅ Version stable restaurée"
+
+3️⃣ RECHARGER L'APPLICATION
+   → Web → Reload gkconsulting.pythonanywhere.com
+   → Attendez 5 secondes
+
+4️⃣ VÉRIFIER
+   → Ouvrez www.pro-chez-nous.com
+   → L'application devrait fonctionner à nouveau
+
+═══════════════════════════════════════════════════════════════════
+OPTION 2 : VOIR LES ERREURS (POUR DÉBOGUER)
+═══════════════════════════════════════════════════════════════════
+
+Si vous voulez comprendre pourquoi ça ne marche pas :
+
+cd /home/gkconsulting/prochenous2
+tail -n 100 /var/log/gkconsulting.pythonanywhere.com.error.log
+
+Cela affichera les 100 dernières lignes d'erreur.
+
+ERREURS COMMUNES :
+- "no such table: categories" → La table n'a pas été créée
+- "TemplateNotFound: admin_categories.html" → Fichiers manquants
+- "syntax error" → Erreur de copie du code
+
+═══════════════════════════════════════════════════════════════════
+OPTION 3 : MIGRATION COMPLÈTE (APRÈS RESTAURATION)
+═══════════════════════════════════════════════════════════════════
+
+Une fois l'application restaurée et fonctionnelle :
+
+1️⃣ Créer les fichiers templates manquants
+2️⃣ Modifier app.py avec toutes les corrections
+3️⃣ Initialiser la base de données
+4️⃣ Recharger l'application
+
+═══════════════════════════════════════════════════════════════════
+⏰ URGENT - FAITES D'ABORD L'OPTION 1
+═══════════════════════════════════════════════════════════════════
+
+1. Restaurez la sauvegarde
+2. Rechargez l'application
+3. Vérifiez que ça fonctionne
+4. ENSUITE on fera les modifications proprement
+
+═══════════════════════════════════════════════════════════════════
+
+Questions ?
+- "Comment restaurer ?" → Utilisez Option 1
+- "Pourquoi ça ne marche pas ?" → Utilisez Option 2
+- "Comment migrer après ?" → On fera ça ensemble
+
+PRIORITÉ : Remettre l'application EN LIGNE pour vos utilisateurs !
