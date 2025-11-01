@@ -31,7 +31,9 @@ PRO CHEZ NOUS is a French professional appointment booking platform designed for
 
 ### Feature Specifications
 - **User Management**: Secure registration and authentication for both clients and professionals using **email OR phone number**. Password recovery with secure token-based system (1-hour expiration) supporting both email and phone number. **Admin accounts** can be created using `create_admin.py` script with full platform management privileges.
-- **Admin Panel (Admin-only)**: Accessible only to users with 'admin' role. Features document verification management for professional accounts.
+- **Admin Panel (Admin-only)**: Accessible only to users with 'admin' role. Features include:
+  - Document verification management for professional accounts
+  - **Category Management**: Full CRUD interface to create, edit, activate/deactivate, and delete professional trade categories. Displays usage statistics (number of professionals per category) and prevents deletion of categories in use.
 - **Professional Discovery**: Browsing, advanced search, and filtering by name, city, category, and minimum rating. Professionals are sorted by rating by default, and by proximity for premium users.
 - **Appointment Management**: Professionals manage time slots, clients book and cancel appointments, with automatic slot restoration.
 - **Rating System**: Clients can rate and review professionals.
@@ -51,9 +53,10 @@ PRO CHEZ NOUS is a French professional appointment booking platform designed for
 - `messages`, `favoris`: Supports premium messaging and favorites features.
 - `documents_verification`: Manages professional verification documents.
 - `password_reset_tokens`: Manages password reset requests with secure tokens and 1-hour expiration.
+- `categories`: Stores professional trade categories with icon, active status, and display order. Managed dynamically via admin panel.
 
 ### Professional Categories
-The platform supports a wide range of manual trade categories (e.g., Plomberie, Électricité, Peinture, Menuiserie, Rénovation, Jardinage).
+The platform features a **dynamic category management system**. Administrators can create, modify, activate/deactivate, and delete professional trade categories through the admin panel. Categories include display order, emoji icons, and usage tracking (number of professionals per category). The system starts with 75 default categories covering manual trades (Plomberie, Électricité, Peinture, Menuiserie, Rénovation, Jardinage, etc.).
 
 ## External Dependencies
 - **Flask**: Main web framework.
@@ -65,6 +68,23 @@ The platform supports a wide range of manual trade categories (e.g., Plomberie, 
 - **SendGrid API**: Email delivery service for password reset and notifications (optional).
 - **Twilio API**: SMS service for phone verification (optional).
 - **Requests**: HTTP library for API integrations.
+
+## Recent Changes (November 01, 2025)
+
+### Dynamic Category Management System
+- **Status**: ✅ Implemented & Tested
+- **Change**: Migrated hardcoded professional categories to database with full admin management interface
+- **Files**: `app.py` (lines 32-36, 792-905), `templates/admin_categories.html`, `templates/admin_category_form.html`, `templates/base.html` (lines 43-51)
+- **Features**:
+  - Database table `categories` with fields: id, nom, icone, actif, ordre, date_creation
+  - Admin routes: list, add, edit, delete, toggle active status
+  - Helper function `get_categories()` returns active categories ordered by display order
+  - Admin UI shows usage statistics (number of professionals per category)
+  - Prevents deletion of categories currently in use
+  - All registration and professional listing flows use dynamic categories
+  - Admin menu includes dropdown with "Vérifications" and "Catégories" options
+- **Security**: Admin-only access with role verification on all routes
+- **Migration**: 75 default categories automatically seeded on first launch
 
 ## Recent Changes (October 31, 2025)
 
