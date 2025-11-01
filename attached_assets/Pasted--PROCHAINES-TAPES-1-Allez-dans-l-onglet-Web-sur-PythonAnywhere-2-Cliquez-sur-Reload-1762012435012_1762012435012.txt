@@ -1,0 +1,47 @@
+
+🔄 PROCHAINES ÉTAPES:
+  1. Allez dans l'onglet 'Web' sur PythonAnywhere
+  2. Cliquez sur 'Reload gkconsulting.pythonanywhere.com'
+  3. Attendez 10 secondes
+  4. Testez www.pro-chez-nous.com
+✨ Votre application devrait maintenant fonctionner parfaitement!
+(venv) 15:43 ~/prochenous2 $ cd prochenous2
+ls -la *.db
+bash: cd: prochenous2: No such file or directory
+-rw-rw-r-- 1 gkconsulting registered_users 61440 Nov  1 13:17 database.db
+(venv) 15:50 ~/prochenous2 $ sqlite3 database.db "SELECT COUNT(*) FROM categories;"
+Error: in prepare, no such table: categories (1)
+(venv) 15:51 ~/prochenous2 $ ls -la *.db*
+-rw-rw-r-- 1 gkconsulting registered_users 61440 Nov  1 13:17 database.db
+-rw-rw-r-- 1 gkconsulting registered_users 32768 Nov  1 15:46 database.db-shm
+-rw-rw-r-- 1 gkconsulting registered_users     0 Nov  1 15:46 database.db-wal
+-rw-rw-r-- 1 gkconsulting registered_users 61440 Nov  1 15:43 database.db.backup_migration_20251101_154333
+(venv) 15:51 ~/prochenous2 $ sqlite3 database.db.backup "SELECT COUNT(*) FROM categories;"è
+Error: in prepare, no such table: categories (1)
+(venv) 15:52 ~/prochenous2 $ sqlite3 database.db.backup "SELECT COUNT(*) FROM categories;"
+Error: in prepare, no such table: categories (1)
+(venv) 15:52 ~/prochenous2 $ head -30 MIGRATION_COMPLETE_PYTHONANYWHERE.sh
+#!/bin/bash
+# ══════════════════════════════════════════════════════════════════════
+# MIGRATION COMPLÈTE - PRO CHEZ NOUS
+# PythonAnywhere Production - www.pro-chez-nous.com
+# ══════════════════════════════════════════════════════════════════════
+echo "🚀 Début de la migration complète..."
+echo ""
+cd /home/gkconsulting/prochenous2
+# ═══════════ ÉTAPE 1 : SAUVEGARDE ═══════════
+echo "📦 Étape 1/4 : Sauvegarde de la base de données..."
+cp database.db database.db.backup_migration_$(date +%Y%m%d_%H%M%S)
+echo "✅ Sauvegarde créée"
+echo ""
+# ═══════════ ÉTAPE 2 : MIGRATION DATABASE ═══════════
+echo "🔧 Étape 2/4 : Migration de la base de données..."
+python3 << 'PYTHON_EOF'
+import sqlite3
+conn = sqlite3.connect('database.db')
+print("  → Ajout des colonnes à la table users...")
+colonnes = [
+    ("phone", "ALTER TABLE users ADD COLUMN phone TEXT"),
+    ("plan", "ALTER TABLE users ADD COLUMN plan TEXT DEFAULT 'gratuit'"),
+    ("statut_verification", "ALTER TABLE users ADD COLUMN statut_verification TEXT DEFAULT 'en_attente'"),
+(venv) 15:53 ~/prochenous2 $ 
