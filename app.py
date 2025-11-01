@@ -951,6 +951,38 @@ def init_db():
         conn.commit()
     except:
         pass
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN phone TEXT')
+        conn.commit()
+    except:
+        pass
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN plan TEXT DEFAULT "gratuit"')
+        conn.commit()
+    except:
+        pass
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN verification_status TEXT DEFAULT "en_attente"')
+        conn.commit()
+    except:
+        pass
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN latitude REAL')
+        conn.commit()
+    except:
+        pass
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN longitude REAL')
+        conn.commit()
+    except:
+        pass
+    
+    # Mettre à jour les utilisateurs existants sans plan
+    try:
+        conn.execute('UPDATE users SET plan = "gratuit" WHERE plan IS NULL')
+        conn.commit()
+    except:
+        pass
     
     # Migrer les catégories hardcodées vers la base de données
     existing_cats = conn.execute('SELECT COUNT(*) as count FROM categories').fetchone()
