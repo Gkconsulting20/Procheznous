@@ -27,7 +27,7 @@ print("  → Ajout des colonnes à la table users...")
 colonnes = [
     ("phone", "ALTER TABLE users ADD COLUMN phone TEXT"),
     ("plan", "ALTER TABLE users ADD COLUMN plan TEXT DEFAULT 'gratuit'"),
-    ("verification_status", "ALTER TABLE users ADD COLUMN verification_status TEXT DEFAULT 'en_attente'"),
+    ("statut_verification", "ALTER TABLE users ADD COLUMN statut_verification TEXT DEFAULT 'en_attente'"),
     ("latitude", "ALTER TABLE users ADD COLUMN latitude REAL"),
     ("longitude", "ALTER TABLE users ADD COLUMN longitude REAL")
 ]
@@ -116,7 +116,7 @@ print(f"  ✅ Table categories: {count_cat} catégories")
 # Vérifier la table users
 cursor = conn.execute("PRAGMA table_info(users)")
 columns = [row[1] for row in cursor.fetchall()]
-required = ['phone', 'plan', 'verification_status', 'latitude', 'longitude']
+required = ['phone', 'plan', 'statut_verification', 'latitude', 'longitude']
 missing = [col for col in required if col not in columns]
 
 if missing:
