@@ -1,0 +1,100 @@
+═══════════════════════════════════════════════════════════════════
+🚀 DÉPLOIEMENT RAPIDE - SYSTÈME DE CATÉGORIES
+PRO CHEZ NOUS - PythonAnywhere Production
+═══════════════════════════════════════════════════════════════════
+
+📝 ÉTAPES À SUIVRE :
+
+1️⃣ CONNEXION
+   → Allez sur www.pythonanywhere.com
+   → Connectez-vous (compte : gkconsulting)
+   → Cliquez sur "Files"
+
+2️⃣ SAUVEGARDE (OBLIGATOIRE)
+   → Allez dans "Consoles" → "Bash"
+   → Copiez-collez cette commande :
+
+cd /home/gkconsulting/prochenous2 && mkdir -p backups/$(date +%Y%m%d) && cp app.py backups/$(date +%Y%m%d)/ && cp templates/base.html backups/$(date +%Y%m%d)/ && cp database.db backups/$(date +%Y%m%d)/ && echo "✅ Sauvegarde terminée"
+
+3️⃣ COPIE DES FICHIERS
+   
+   A) Fichiers à REMPLACER :
+   
+   📄 /home/gkconsulting/prochenous2/app.py
+      → Ouvrez le fichier sur PythonAnywhere
+      → Supprimez tout le contenu
+      → Copiez le contenu de app.py depuis Replit
+      → Collez dans PythonAnywhere
+      → Cliquez "Save"
+   
+   📄 /home/gkconsulting/prochenous2/templates/base.html
+      → Ouvrez le fichier sur PythonAnywhere
+      → Supprimez tout le contenu
+      → Copiez le contenu de templates/base.html depuis Replit
+      → Collez dans PythonAnywhere
+      → Cliquez "Save"
+   
+   B) Fichiers à CRÉER :
+   
+   📄 /home/gkconsulting/prochenous2/templates/admin_categories.html
+      → Cliquez "New file" dans le dossier templates/
+      → Nommez : admin_categories.html
+      → Copiez le contenu depuis Replit
+      → Collez dans PythonAnywhere
+      → Cliquez "Save"
+   
+   📄 /home/gkconsulting/prochenous2/templates/admin_category_form.html
+      → Cliquez "New file" dans le dossier templates/
+      → Nommez : admin_category_form.html
+      → Copiez le contenu depuis Replit
+      → Collez dans PythonAnywhere
+      → Cliquez "Save"
+
+4️⃣ RECHARGEMENT DE L'APPLICATION
+   → Allez dans "Web"
+   → Cliquez sur "Reload gkconsulting.pythonanywhere.com" (bouton vert)
+   → Attendez 3-5 secondes
+
+5️⃣ VÉRIFICATION
+   → Ouvrez www.pro-chez-nous.com
+   → Connectez-vous avec votre compte admin
+   → Cliquez sur "🔐 Admin" dans le menu
+   → Vous devez voir "🏷️ Catégories"
+   → Cliquez dessus
+   → Vous devez voir les 75 catégories par défaut
+
+═══════════════════════════════════════════════════════════════════
+
+✅ CHECKLIST :
+[ ] Sauvegarde effectuée
+[ ] app.py remplacé
+[ ] templates/base.html remplacé
+[ ] templates/admin_categories.html créé
+[ ] templates/admin_category_form.html créé
+[ ] Application rechargée
+[ ] Menu "Catégories" visible
+[ ] Liste des catégories affichée
+
+═══════════════════════════════════════════════════════════════════
+
+⚠️ EN CAS DE PROBLÈME :
+
+ERREUR 500 :
+→ Console Bash :
+tail -n 50 /var/log/gkconsulting.pythonanywhere.com.error.log
+
+MENU INVISIBLE :
+→ Vérifiez que vous êtes connecté avec un compte admin
+→ Videz le cache de votre navigateur
+
+RESTAURER LA SAUVEGARDE :
+→ Console Bash :
+cd /home/gkconsulting/prochenous2
+cp backups/YYYYMMDD/app.py app.py
+cp backups/YYYYMMDD/base.html templates/base.html
+touch /var/www/gkconsulting_pythonanywhere_com_wsgi.py
+
+═══════════════════════════════════════════════════════════════════
+
+⏱️ Durée estimée : 15-20 minutes
+🎯 Prêt à commencer ? C'est parti ! 🚀
