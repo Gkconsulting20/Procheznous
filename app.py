@@ -26,34 +26,19 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+def get_categories():
+    """Récupère les catégories actives depuis la base de données"""
+    conn = get_db()
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+    return [cat['nom'] for cat in categories]
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    categories = [
-        '🔧 Plomberie', '⚡ Électricité', '🎨 Peinture', '🪚 Menuiserie', '🧱 Maçonnerie',
-        '🏗️ Rénovation', '🪟 Vitrerie', '🔐 Serrurerie', '🏠 Toiture', '🪜 Couverture',
-        '🌳 Jardinage', '🌱 Paysagiste', '🌿 Élagage', '💧 Piscine',
-        '❄️ Climatisation', '🔥 Chauffage', '📡 Antenne/Parabole', '🚪 Portail/Clôture',
-        '🧹 Nettoyage', '🧽 Ménage à domicile', '🪟 Lavage vitres', '🧼 Pressing/Repassage',
-        '🚚 Déménagement', '📦 Livraison', '🚗 Transport', '🛵 Coursier',
-        '🔨 Bricolage', '⚙️ Dépannage', '🔧 Réparation électroménager', '📱 Réparation téléphone',
-        '💻 Informatique', '🖥️ Maintenance PC', '📶 Installation internet',
-        '✂️ Coiffure à domicile', '💅 Manucure', '💆 Massage', '👗 Couture/Retouche',
-        '🍳 Cuisinier à domicile', '🎂 Pâtisserie', '🍕 Traiteur', '☕ Barista',
-        '👶 Garde d\'enfants', '🧓 Aide à domicile', '🐕 Garde animaux', '🚶 Promenade chiens',
-        '🚗 Mécanicien auto', '🏍️ Mécanicien moto', '🔧 Carrosserie', '🚙 Lavage auto',
-        '📚 Soutien scolaire', '🎓 Formation', '🎸 Cours de musique', '🎨 Cours d\'art',
-        '📸 Photographe', '🎥 Vidéaste', '🎤 DJ/Sonorisation', '🎪 Animation événements',
-        '👔 Repassage', '🧺 Blanchisserie', '🪡 Tapissier', '🛋️ Rénovation meuble',
-        '🪴 Fleuriste', '🌺 Décoration florale', '🎀 Décoration événements',
-        '🔒 Sécurité', '👮 Gardiennage', '📹 Installation alarme',
-        '🏋️ Coach sportif', '🧘 Yoga/Pilates', '💪 Personal trainer',
-        '🐝 Apiculture', '🐓 Élevage', '🌾 Agriculture', '🥕 Maraîchage',
-        '🎪 Autres services'
-    ]
+    categories = get_categories()
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
         email = request.form.get('email', '').strip()
@@ -153,28 +138,7 @@ def dashboard():
 @app.route('/professionals')
 def view_professionals():
     conn = get_db()
-    categories = [
-        '🔧 Plomberie', '⚡ Électricité', '🎨 Peinture', '🪚 Menuiserie', '🧱 Maçonnerie',
-        '🏗️ Rénovation', '🪟 Vitrerie', '🔐 Serrurerie', '🏠 Toiture', '🪜 Couverture',
-        '🌳 Jardinage', '🌱 Paysagiste', '🌿 Élagage', '💧 Piscine',
-        '❄️ Climatisation', '🔥 Chauffage', '📡 Antenne/Parabole', '🚪 Portail/Clôture',
-        '🧹 Nettoyage', '🧽 Ménage à domicile', '🪟 Lavage vitres', '🧼 Pressing/Repassage',
-        '🚚 Déménagement', '📦 Livraison', '🚗 Transport', '🛵 Coursier',
-        '🔨 Bricolage', '⚙️ Dépannage', '🔧 Réparation électroménager', '📱 Réparation téléphone',
-        '💻 Informatique', '🖥️ Maintenance PC', '📶 Installation internet',
-        '✂️ Coiffure à domicile', '💅 Manucure', '💆 Massage', '👗 Couture/Retouche',
-        '🍳 Cuisinier à domicile', '🎂 Pâtisserie', '🍕 Traiteur', '☕ Barista',
-        '👶 Garde d\'enfants', '🧓 Aide à domicile', '🐕 Garde animaux', '🚶 Promenade chiens',
-        '🚗 Mécanicien auto', '🏍️ Mécanicien moto', '🔧 Carrosserie', '🚙 Lavage auto',
-        '📚 Soutien scolaire', '🎓 Formation', '🎸 Cours de musique', '🎨 Cours d\'art',
-        '📸 Photographe', '🎥 Vidéaste', '🎤 DJ/Sonorisation', '🎪 Animation événements',
-        '👔 Repassage', '🧺 Blanchisserie', '🪡 Tapissier', '🛋️ Rénovation meuble',
-        '🪴 Fleuriste', '🌺 Décoration florale', '🎀 Décoration événements',
-        '🔒 Sécurité', '👮 Gardiennage', '📹 Installation alarme',
-        '🏋️ Coach sportif', '🧘 Yoga/Pilates', '💪 Personal trainer',
-        '🐝 Apiculture', '🐓 Élevage', '🌾 Agriculture', '🥕 Maraîchage',
-        '🎪 Autres services'
-    ]
+    categories = get_categories()
     
     search = request.args.get('search', '').strip()
     ville = request.args.get('ville', '').strip()
@@ -252,28 +216,7 @@ def professionals_nearby():
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
         return R * c
     
-    categories = [
-        '🔧 Plomberie', '⚡ Électricité', '🎨 Peinture', '🪚 Menuiserie', '🧱 Maçonnerie',
-        '🏗️ Rénovation', '🪟 Vitrerie', '🔐 Serrurerie', '🏠 Toiture', '🪜 Couverture',
-        '🌳 Jardinage', '🌱 Paysagiste', '🌿 Élagage', '💧 Piscine',
-        '❄️ Climatisation', '🔥 Chauffage', '📡 Antenne/Parabole', '🚪 Portail/Clôture',
-        '🧹 Nettoyage', '🧽 Ménage à domicile', '🪟 Lavage vitres', '🧼 Pressing/Repassage',
-        '🚚 Déménagement', '📦 Livraison', '🚗 Transport', '🛵 Coursier',
-        '🔨 Bricolage', '⚙️ Dépannage', '🔧 Réparation électroménager', '📱 Réparation téléphone',
-        '💻 Informatique', '🖥️ Maintenance PC', '📶 Installation internet',
-        '✂️ Coiffure à domicile', '💅 Manucure', '💆 Massage', '👗 Couture/Retouche',
-        '🍳 Cuisinier à domicile', '🎂 Pâtisserie', '🍕 Traiteur', '☕ Barista',
-        '👶 Garde d\'enfants', '🧓 Aide à domicile', '🐕 Garde animaux', '🚶 Promenade chiens',
-        '🚗 Mécanicien auto', '🏍️ Mécanicien moto', '🔧 Carrosserie', '🚙 Lavage auto',
-        '📚 Soutien scolaire', '🎓 Formation', '🎸 Cours de musique', '🎨 Cours d\'art',
-        '📸 Photographe', '🎥 Vidéaste', '🎤 DJ/Sonorisation', '🎪 Animation événements',
-        '👔 Repassage', '🧺 Blanchisserie', '🪡 Tapissier', '🛋️ Rénovation meuble',
-        '🪴 Fleuriste', '🌺 Décoration florale', '🎀 Décoration événements',
-        '🔒 Sécurité', '👮 Gardiennage', '📹 Installation alarme',
-        '🏋️ Coach sportif', '🧘 Yoga/Pilates', '💪 Personal trainer',
-        '🐝 Apiculture', '🐓 Élevage', '🌾 Agriculture', '🥕 Maraîchage',
-        '🎪 Autres services'
-    ]
+    categories = get_categories()
     
     pros = conn.execute('''
         SELECT u.id, u.name, u.localisation, u.categorie, u.plan, u.statut_verification, u.latitude, u.longitude,
@@ -843,6 +786,127 @@ def fedapay_callback():
         
         return jsonify({'error': 'FedaPay not configured'}), 400
 
+@app.route('/admin/categories')
+def admin_categories():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    categories = conn.execute('''
+        SELECT c.*, COUNT(u.id) as nb_pros
+        FROM categories c
+        LEFT JOIN users u ON c.nom = u.categorie AND u.role = 'pro'
+        GROUP BY c.id
+        ORDER BY c.ordre ASC
+    ''').fetchall()
+    return render_template('admin_categories.html', categories=categories)
+
+@app.route('/admin/categories/add', methods=['GET', 'POST'])
+def admin_add_category():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        nom = request.form.get('nom', '').strip()
+        icone = request.form.get('icone', '').strip()
+        ordre = request.form.get('ordre', 0)
+        
+        if not nom:
+            flash('Le nom de la catégorie est obligatoire', 'error')
+            return render_template('admin_category_form.html', action='add')
+        
+        conn = get_db()
+        try:
+            conn.execute('INSERT INTO categories (nom, icone, ordre) VALUES (?, ?, ?)', (nom, icone, ordre))
+            conn.commit()
+            flash(f'Catégorie "{nom}" ajoutée avec succès!', 'success')
+            return redirect(url_for('admin_categories'))
+        except sqlite3.IntegrityError:
+            flash('Cette catégorie existe déjà', 'error')
+            return render_template('admin_category_form.html', action='add', nom=nom, icone=icone, ordre=ordre)
+    
+    return render_template('admin_category_form.html', action='add')
+
+@app.route('/admin/categories/edit/<int:id>', methods=['GET', 'POST'])
+def admin_edit_category(id):
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    category = conn.execute('SELECT * FROM categories WHERE id = ?', (id,)).fetchone()
+    
+    if not category:
+        flash('Catégorie introuvable', 'error')
+        return redirect(url_for('admin_categories'))
+    
+    if request.method == 'POST':
+        nom = request.form.get('nom', '').strip()
+        icone = request.form.get('icone', '').strip()
+        ordre = request.form.get('ordre', 0)
+        
+        if not nom:
+            flash('Le nom de la catégorie est obligatoire', 'error')
+            return render_template('admin_category_form.html', action='edit', category=category)
+        
+        try:
+            conn.execute('UPDATE categories SET nom = ?, icone = ?, ordre = ? WHERE id = ?', (nom, icone, ordre, id))
+            conn.commit()
+            flash(f'Catégorie "{nom}" modifiée avec succès!', 'success')
+            return redirect(url_for('admin_categories'))
+        except sqlite3.IntegrityError:
+            flash('Cette catégorie existe déjà', 'error')
+            return render_template('admin_category_form.html', action='edit', category=category, nom=nom, icone=icone, ordre=ordre)
+    
+    return render_template('admin_category_form.html', action='edit', category=category)
+
+@app.route('/admin/categories/delete/<int:id>', methods=['POST'])
+def admin_delete_category(id):
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    category = conn.execute('SELECT * FROM categories WHERE id = ?', (id,)).fetchone()
+    
+    if not category:
+        flash('Catégorie introuvable', 'error')
+        return redirect(url_for('admin_categories'))
+    
+    pros_using = conn.execute('SELECT COUNT(*) as count FROM users WHERE categorie = ? AND role = "pro"', (category['nom'],)).fetchone()
+    
+    if pros_using['count'] > 0:
+        flash(f'Impossible de supprimer cette catégorie car {pros_using["count"]} professionnel(s) l\'utilisent. Désactivez-la plutôt.', 'error')
+        return redirect(url_for('admin_categories'))
+    
+    conn.execute('DELETE FROM categories WHERE id = ?', (id,))
+    conn.commit()
+    flash(f'Catégorie "{category["nom"]}" supprimée avec succès!', 'success')
+    return redirect(url_for('admin_categories'))
+
+@app.route('/admin/categories/toggle/<int:id>', methods=['POST'])
+def admin_toggle_category(id):
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    category = conn.execute('SELECT * FROM categories WHERE id = ?', (id,)).fetchone()
+    
+    if not category:
+        flash('Catégorie introuvable', 'error')
+        return redirect(url_for('admin_categories'))
+    
+    new_status = 0 if category['actif'] == 1 else 1
+    conn.execute('UPDATE categories SET actif = ? WHERE id = ?', (new_status, id))
+    conn.commit()
+    
+    status_text = 'activée' if new_status == 1 else 'désactivée'
+    flash(f'Catégorie "{category["nom"]}" {status_text} avec succès!', 'success')
+    return redirect(url_for('admin_categories'))
+
 def init_db():
     conn = get_db()
     conn.executescript('''
@@ -868,6 +932,14 @@ def init_db():
         FOREIGN KEY (pro_id) REFERENCES users(id),
         FOREIGN KEY (client_id) REFERENCES users(id)
     );
+    CREATE TABLE IF NOT EXISTS categories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nom TEXT NOT NULL UNIQUE,
+        icone TEXT,
+        actif INTEGER DEFAULT 1,
+        ordre INTEGER DEFAULT 0,
+        date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
     ''')
     try:
         conn.execute('ALTER TABLE users ADD COLUMN localisation TEXT')
@@ -879,6 +951,39 @@ def init_db():
         conn.commit()
     except:
         pass
+    
+    # Migrer les catégories hardcodées vers la base de données
+    existing_cats = conn.execute('SELECT COUNT(*) as count FROM categories').fetchone()
+    if existing_cats['count'] == 0:
+        default_categories = [
+            ('🔧 Plomberie', '🔧', 1), ('⚡ Électricité', '⚡', 2), ('🎨 Peinture', '🎨', 3),
+            ('🪚 Menuiserie', '🪚', 4), ('🧱 Maçonnerie', '🧱', 5), ('🏗️ Rénovation', '🏗️', 6),
+            ('🪟 Vitrerie', '🪟', 7), ('🔐 Serrurerie', '🔐', 8), ('🏠 Toiture', '🏠', 9),
+            ('🪜 Couverture', '🪜', 10), ('🌳 Jardinage', '🌳', 11), ('🌱 Paysagiste', '🌱', 12),
+            ('🌿 Élagage', '🌿', 13), ('💧 Piscine', '💧', 14), ('❄️ Climatisation', '❄️', 15),
+            ('🔥 Chauffage', '🔥', 16), ('📡 Antenne/Parabole', '📡', 17), ('🚪 Portail/Clôture', '🚪', 18),
+            ('🧹 Nettoyage', '🧹', 19), ('🧽 Ménage à domicile', '🧽', 20), ('🪟 Lavage vitres', '🪟', 21),
+            ('🧼 Pressing/Repassage', '🧼', 22), ('🚚 Déménagement', '🚚', 23), ('📦 Livraison', '📦', 24),
+            ('🚗 Transport', '🚗', 25), ('🛵 Coursier', '🛵', 26), ('🔨 Bricolage', '🔨', 27),
+            ('⚙️ Dépannage', '⚙️', 28), ('🔧 Réparation électroménager', '🔧', 29), ('📱 Réparation téléphone', '📱', 30),
+            ('💻 Informatique', '💻', 31), ('🖥️ Maintenance PC', '🖥️', 32), ('📶 Installation internet', '📶', 33),
+            ('✂️ Coiffure à domicile', '✂️', 34), ('💅 Manucure', '💅', 35), ('💆 Massage', '💆', 36),
+            ('👗 Couture/Retouche', '👗', 37), ('🍳 Cuisinier à domicile', '🍳', 38), ('🎂 Pâtisserie', '🎂', 39),
+            ('🍕 Traiteur', '🍕', 40), ('☕ Barista', '☕', 41), ('👶 Garde d\'enfants', '👶', 42),
+            ('🧓 Aide à domicile', '🧓', 43), ('🐕 Garde animaux', '🐕', 44), ('🚶 Promenade chiens', '🚶', 45),
+            ('🚗 Mécanicien auto', '🚗', 46), ('🏍️ Mécanicien moto', '🏍️', 47), ('🔧 Carrosserie', '🔧', 48),
+            ('🚙 Lavage auto', '🚙', 49), ('📚 Soutien scolaire', '📚', 50), ('🎓 Formation', '🎓', 51),
+            ('🎸 Cours de musique', '🎸', 52), ('🎨 Cours d\'art', '🎨', 53), ('📸 Photographe', '📸', 54),
+            ('🎥 Vidéaste', '🎥', 55), ('🎤 DJ/Sonorisation', '🎤', 56), ('🎪 Animation événements', '🎪', 57),
+            ('👔 Repassage', '👔', 58), ('🧺 Blanchisserie', '🧺', 59), ('🪡 Tapissier', '🪡', 60),
+            ('🛋️ Rénovation meuble', '🛋️', 61), ('🪴 Fleuriste', '🪴', 62), ('🌺 Décoration florale', '🌺', 63),
+            ('🎀 Décoration événements', '🎀', 64), ('🔒 Sécurité', '🔒', 65), ('👮 Gardiennage', '👮', 66),
+            ('📹 Installation alarme', '📹', 67), ('🏋️ Coach sportif', '🏋️', 68), ('🧘 Yoga/Pilates', '🧘', 69),
+            ('💪 Personal trainer', '💪', 70), ('🐝 Apiculture', '🐝', 71), ('🐓 Élevage', '🐓', 72),
+            ('🌾 Agriculture', '🌾', 73), ('🥕 Maraîchage', '🥕', 74), ('🎪 Autres services', '🎪', 75)
+        ]
+        conn.executemany('INSERT INTO categories (nom, icone, ordre) VALUES (?, ?, ?)', default_categories)
+        conn.commit()
 
 
 

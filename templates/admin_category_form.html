@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}{% if action == 'add' %}Nouvelle Catégorie{% else %}Modifier Catégorie{% endif %}{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3>
+                        {% if action == 'add' %}
+                        ➕ Ajouter une Nouvelle Catégorie
+                        {% else %}
+                        ✏️ Modifier la Catégorie
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="nom" class="form-label">Nom de la catégorie *</label>
+                            <input type="text" class="form-control" id="nom" name="nom" 
+                                   value="{% if category %}{{ category.nom }}{% elif nom %}{{ nom }}{% endif %}" 
+                                   placeholder="Ex: 🔧 Plomberie" required>
+                            <div class="form-text">Incluez l'icône au début du nom pour plus de visibilité</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="icone" class="form-label">Icône (emoji)</label>
+                            <input type="text" class="form-control" id="icone" name="icone" 
+                                   value="{% if category %}{{ category.icone }}{% elif icone %}{{ icone }}{% endif %}" 
+                                   placeholder="Ex: 🔧" maxlength="4">
+                            <div class="form-text">Un seul emoji représentant la catégorie</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ordre" class="form-label">Ordre d'affichage</label>
+                            <input type="number" class="form-control" id="ordre" name="ordre" 
+                                   value="{% if category %}{{ category.ordre }}{% elif ordre %}{{ ordre }}{% else %}0{% endif %}" 
+                                   min="0">
+                            <div class="form-text">Plus le nombre est petit, plus la catégorie apparaît en premier</div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <strong>💡 Conseils :</strong>
+                            <ul class="mb-0">
+                                <li>Choisissez un nom clair et descriptif</li>
+                                <li>Utilisez des emojis cohérents avec le métier</li>
+                                <li>Organisez l'ordre logiquement (métiers similaires ensemble)</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('admin_categories') }}" class="btn btn-secondary">Annuler</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if action == 'add' %}➕ Ajouter{% else %}💾 Enregistrer{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if action == 'add' %}
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>🎨 Exemples d'Emojis Populaires</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Bâtiment & Rénovation :</strong> 🏗️ 🔨 🧱 🏠 🪚 🔧 ⚙️ 🪛</p>
+                    <p><strong>Services :</strong> 🧹 🧽 🚚 📦 🚗 🍳 👔 ✂️</p>
+                    <p><strong>Tech & Digital :</strong> 💻 📱 🖥️ 📶 🔌 ⚡</p>
+                    <p><strong>Bien-être :</strong> 💅 💆 🏋️ 🧘 💪</p>
+                    <p><strong>Nature :</strong> 🌳 🌱 🌿 🪴 🐕 🐓</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

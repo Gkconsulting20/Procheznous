@@ -37,7 +37,15 @@
             {% endif %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('subscription') }}">💎 Abonnement</a></li>
             {% if session.role == 'admin' %}
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_verification') }}">🔐 Admin</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    🔐 Admin
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('admin_verification') }}">📋 Vérifications</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('admin_categories') }}">🏷️ Catégories</a></li>
+                </ul>
+            </li>
             {% endif %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">🚪 Déconnexion</a></li>
         {% else %}
