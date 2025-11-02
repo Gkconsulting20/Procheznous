@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Gestion des utilisateurs - Admin{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>🔐 Gestion des utilisateurs</h2>
+        <a href="{{ url_for('admin_add_user') }}" class="btn btn-success">
+            ➕ Ajouter un utilisateur
+        </a>
+    </div>
+
+    {% if users|length == 0 %}
+    <div class="alert alert-info">
+        Aucun utilisateur enregistré.
+    </div>
+    {% else %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Rôle</th>
+                    <th>Pays</th>
+                    <th>Ville</th>
+                    <th>Plan</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email if user.email else '-' }}</td>
+                    <td>{{ user.phone if user.phone else '-' }}</td>
+                    <td>
+                        {% if user.role == 'admin' %}
+                            <span class="badge bg-danger">🔐 Admin</span>
+                        {% elif user.role == 'pro' %}
+                            <span class="badge bg-primary">🔧 Pro</span>
+                        {% else %}
+                            <span class="badge bg-secondary">👤 Client</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.pays if user.pays else '-' }}</td>
+                    <td>{{ user.localisation if user.localisation else '-' }}</td>
+                    <td>
+                        {% if user.plan == 'premium' %}
+                            <span class="badge bg-warning text-dark">⭐ Premium</span>
+                        {% else %}
+                            <span class="badge bg-light text-dark">🆓 Gratuit</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.statut_verification == 'verifie' %}
+                            <span class="badge bg-success">✓ Vérifié</span>
+                        {% elif user.statut_verification == 'en_attente' %}
+                            <span class="badge bg-warning">⏳ En attente</span>
+                        {% else %}
+                            <span class="badge bg-secondary">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{{ url_for('admin_delete_user', id=user.id) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.');">
+                            <button type="submit" class="btn btn-sm btn-danger" {% if user.id == session.user_id %}disabled title="Vous ne pouvez pas supprimer votre propre compte"{% endif %}>
+                                🗑️ Supprimer
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="alert alert-light mt-3">
+        <strong>Total :</strong> {{ users|length }} utilisateur(s) enregistré(s)
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

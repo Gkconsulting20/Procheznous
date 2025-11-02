@@ -55,6 +55,7 @@ def register():
         password = request.form.get('password', '').strip()
         role = request.form.get('role', '').strip()
         localisation = request.form.get('localisation', '').strip()
+        pays = request.form.get('pays', 'Togo').strip()
         categorie = request.form.get('categorie', '').strip() if role == 'pro' else None
         
         if not name or not password or not role:
@@ -86,8 +87,8 @@ def register():
                 return render_template('register.html', categories=categories)
         
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        conn.execute('INSERT INTO users (name, email, phone, password, role, localisation, categorie) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                     (name, email if email else None, phone if phone else None, hashed_password, role, localisation, categorie))
+        conn.execute('INSERT INTO users (name, email, phone, password, role, localisation, pays, categorie) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                     (name, email if email else None, phone if phone else None, hashed_password, role, localisation, pays, categorie))
         conn.commit()
         flash('Inscription réussie! Vous pouvez maintenant vous connecter', 'success')
         return redirect(url_for('login'))
@@ -922,6 +923,106 @@ def admin_toggle_category(id):
     flash(f'Catégorie "{category["nom"]}" {status_text} avec succès!', 'success')
     return redirect(url_for('admin_categories'))
 
+@app.route('/admin/users')
+def admin_users():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    users = conn.execute('''
+        SELECT id, name, email, phone, role, localisation, pays, categorie, plan, statut_verification
+        FROM users
+        ORDER BY id DESC
+    ''').fetchall()
+    return render_template('admin_users.html', users=users)
+
+@app.route('/admin/users/add', methods=['GET', 'POST'])
+def admin_add_user():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    categories = get_categories()
+    
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+        password = request.form.get('password', '').strip()
+        role = request.form.get('role', '').strip()
+        localisation = request.form.get('localisation', '').strip()
+        pays = request.form.get('pays', 'Togo').strip()
+        plan = request.form.get('plan', 'gratuit').strip()
+        categorie = request.form.get('categorie', '').strip() if role == 'pro' else None
+        
+        if not name or not password or not role:
+            flash('Le nom, mot de passe et rôle sont obligatoires', 'error')
+            return render_template('admin_user_form.html', action='add', categories=categories)
+        
+        if not email and not phone:
+            flash('Veuillez fournir un email OU un numéro de téléphone', 'error')
+            return render_template('admin_user_form.html', action='add', categories=categories)
+        
+        if phone:
+            if not validate_phone_number(phone):
+                flash('Numéro de téléphone invalide', 'error')
+                return render_template('admin_user_form.html', action='add', categories=categories)
+            phone = normalize_phone_number(phone)
+        
+        conn = get_db()
+        
+        if email:
+            existing = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+            if existing:
+                flash('Cette adresse email est déjà utilisée', 'error')
+                return render_template('admin_user_form.html', action='add', categories=categories)
+        
+        if phone:
+            existing = conn.execute('SELECT * FROM users WHERE phone = ?', (phone,)).fetchone()
+            if existing:
+                flash('Ce numéro de téléphone est déjà utilisé', 'error')
+                return render_template('admin_user_form.html', action='add', categories=categories)
+        
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        conn.execute('''
+            INSERT INTO users (name, email, phone, password, role, localisation, pays, categorie, plan, statut_verification)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (name, email if email else None, phone if phone else None, hashed_password, role, localisation, pays, categorie, plan, 'en_attente'))
+        conn.commit()
+        
+        flash(f'Utilisateur "{name}" créé avec succès!', 'success')
+        return redirect(url_for('admin_users'))
+    
+    return render_template('admin_user_form.html', action='add', categories=categories)
+
+@app.route('/admin/users/delete/<int:id>', methods=['POST'])
+def admin_delete_user(id):
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    if id == session.get('user_id'):
+        flash('Vous ne pouvez pas supprimer votre propre compte!', 'error')
+        return redirect(url_for('admin_users'))
+    
+    conn = get_db()
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (id,)).fetchone()
+    
+    if not user:
+        flash('Utilisateur introuvable', 'error')
+        return redirect(url_for('admin_users'))
+    
+    conn.execute('DELETE FROM rendezvous WHERE client_id = ? OR pro_id = ?', (id, id))
+    conn.execute('DELETE FROM slots WHERE pro_id = ?', (id,))
+    conn.execute('DELETE FROM avis WHERE client_id = ? OR pro_id = ?', (id, id))
+    conn.execute('DELETE FROM documents_verification WHERE user_id = ?', (id,))
+    conn.execute('DELETE FROM users WHERE id = ?', (id,))
+    conn.commit()
+    
+    flash(f'Utilisateur "{user["name"]}" supprimé avec succès!', 'success')
+    return redirect(url_for('admin_users'))
+
 def init_db():
     conn = get_db()
     conn.executescript('''
@@ -988,6 +1089,11 @@ def init_db():
         pass
     try:
         conn.execute('ALTER TABLE users ADD COLUMN longitude REAL')
+        conn.commit()
+    except:
+        pass
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN pays TEXT DEFAULT "Togo"')
         conn.commit()
     except:
         pass

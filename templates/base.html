@@ -42,6 +42,7 @@
                     🔐 Admin
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('admin_users') }}">👥 Utilisateurs</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('admin_verification') }}">📋 Vérifications</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('admin_categories') }}">🏷️ Catégories</a></li>
                 </ul>

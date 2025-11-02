@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Ajouter' if action == 'add' else 'Modifier' }} un utilisateur - Admin{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">{{ '➕ Ajouter' if action == 'add' else '✏️ Modifier' }} un utilisateur</h2>
+            
+            <form method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="name" class="form-label">Nom complet *</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="role" class="form-label">Rôle *</label>
+                        <select class="form-control" id="role" name="role" required>
+                            <option value="">Choisir un rôle</option>
+                            <option value="user">👤 Client</option>
+                            <option value="pro">🔧 Professionnel</option>
+                            <option value="admin">🔐 Administrateur</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="email@exemple.com">
+                        <div class="form-text">Email OU téléphone requis</div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label">Téléphone</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="+228XXXXXXXX">
+                        <div class="form-text">Email OU téléphone requis</div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="password" class="form-label">Mot de passe *</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="plan" class="form-label">Plan *</label>
+                        <select class="form-control" id="plan" name="plan" required>
+                            <option value="gratuit">🆓 Gratuit</option>
+                            <option value="premium">⭐ Premium</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="pays" class="form-label">Pays *</label>
+                        <select class="form-control" id="pays" name="pays" required>
+                            <option value="Togo" selected>🇹🇬 Togo</option>
+                            <option value="Bénin">🇧🇯 Bénin</option>
+                            <option value="Burkina Faso">🇧🇫 Burkina Faso</option>
+                            <option value="Côte d'Ivoire">🇨🇮 Côte d'Ivoire</option>
+                            <option value="Mali">🇲🇱 Mali</option>
+                            <option value="Niger">🇳🇪 Niger</option>
+                            <option value="Sénégal">🇸🇳 Sénégal</option>
+                            <option value="Ghana">🇬🇭 Ghana</option>
+                            <option value="Guinée">🇬🇳 Guinée</option>
+                            <option value="Autre">🌍 Autre</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="localisation" class="form-label">Ville / Localisation</label>
+                        <input type="text" class="form-control" id="localisation" name="localisation" placeholder="Ex: Lomé, Cotonou">
+                    </div>
+                </div>
+                
+                <div id="proFields" style="display:none;">
+                    <div class="mb-3">
+                        <label for="categorie" class="form-label">Catégorie professionnelle *</label>
+                        <select class="form-control" id="categorie" name="categorie">
+                            <option value="">Choisir une catégorie</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat }}">{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">
+                        {{ '➕ Créer' if action == 'add' else '💾 Enregistrer' }}
+                    </button>
+                    <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('role').addEventListener('change', function() {
+    const proFields = document.getElementById('proFields');
+    const categorieSelect = document.getElementById('categorie');
+    
+    if (this.value === 'pro') {
+        proFields.style.display = 'block';
+        categorieSelect.required = true;
+    } else {
+        proFields.style.display = 'none';
+        categorieSelect.required = false;
+    }
+});
+</script>
+{% endblock %}
