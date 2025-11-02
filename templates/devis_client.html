@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Mes Devis{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>📝 Mes Demandes de Devis</h2>
+    
+    {% if user_plan != 'premium' %}
+    <div class="alert alert-warning">
+        <strong>💡 Astuce :</strong> La gestion de devis fonctionne si vous OU le professionnel êtes Premium. Passez à Premium pour débloquer tous les avantages !
+    </div>
+    {% endif %}
+    
+    {% if devis|length == 0 %}
+    <div class="alert alert-info mt-3">
+        Vous n'avez encore demandé aucun devis. Consultez les professionnels pour en demander un !
+    </div>
+    <a href="{{ url_for('view_professionals') }}" class="btn btn-primary">👥 Voir les professionnels</a>
+    {% else %}
+    <div class="row mt-4">
+        {% for d in devis %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>{{ d.titre }}</strong>
+                    {% if d.statut == 'en_attente' %}
+                        <span class="badge bg-warning">⏳ En attente</span>
+                    {% elif d.statut == 'repondu' %}
+                        <span class="badge bg-success">✅ Répondu</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <p><strong>Professionnel :</strong> {{ d.pro_name }}</p>
+                    <p><strong>Catégorie :</strong> {{ d.categorie }}</p>
+                    <p><strong>Description :</strong> {{ d.description if d.description else '-' }}</p>
+                    <p><small class="text-muted">Demandé le : {{ d.date_demande }}</small></p>
+                    
+                    {% if d.statut == 'repondu' %}
+                    <hr>
+                    <h6>💰 Réponse du professionnel :</h6>
+                    <p><strong>Montant :</strong> {{ d.montant }} FCFA</p>
+                    <p><strong>Délai :</strong> {{ d.delai if d.delai else '-' }}</p>
+                    <p><strong>Notes :</strong> {{ d.notes_pro if d.notes_pro else '-' }}</p>
+                    <p><small class="text-muted">Répondu le : {{ d.date_reponse }}</small></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

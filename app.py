@@ -412,24 +412,28 @@ def messages():
     
     conn = get_db()
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    user_plan = user['plan'] if 'plan' in user.keys() else 'gratuit'
     
-    if user['plan'] != 'premium':
-        flash('La messagerie est réservée aux membres Premium. Passez à Premium pour accéder à cette fonctionnalité!', 'error')
-        return redirect(url_for('subscription'))
-    
+    # Récupérer les messages où AU MOINS UN est Premium (expéditeur OU destinataire)
     received = conn.execute('''
-        SELECT m.*, u.name as expediteur_name FROM messages m
+        SELECT m.*, u.name as expediteur_name, u.plan as expediteur_plan FROM messages m
         JOIN users u ON m.expediteur_id = u.id
-        WHERE m.destinataire_id = ? ORDER BY m.date DESC
+        WHERE m.destinataire_id = ?
+        ORDER BY m.date DESC
     ''', (session['user_id'],)).fetchall()
     
     sent = conn.execute('''
-        SELECT m.*, u.name as destinataire_name FROM messages m
+        SELECT m.*, u.name as destinataire_name, u.plan as destinataire_plan FROM messages m
         JOIN users u ON m.destinataire_id = u.id
-        WHERE m.expediteur_id = ? ORDER BY m.date DESC
+        WHERE m.expediteur_id = ?
+        ORDER BY m.date DESC
     ''', (session['user_id'],)).fetchall()
     
-    return render_template('messages.html', received=received, sent=sent)
+    # Filtrer: afficher seulement si l'utilisateur OU son interlocuteur est Premium
+    received_premium = [msg for msg in received if user_plan == 'premium' or msg['expediteur_plan'] == 'premium']
+    sent_premium = [msg for msg in sent if user_plan == 'premium' or msg['destinataire_plan'] == 'premium']
+    
+    return render_template('messages.html', received=received_premium, sent=sent_premium, user_plan=user_plan)
 
 @app.route('/send_message/<int:dest_id>', methods=['GET', 'POST'])
 def send_message(dest_id):
@@ -438,9 +442,18 @@ def send_message(dest_id):
     
     conn = get_db()
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    destinataire = conn.execute('SELECT * FROM users WHERE id = ?', (dest_id,)).fetchone()
     
-    if user['plan'] != 'premium':
-        flash('La messagerie est réservée aux membres Premium!', 'error')
+    if not destinataire:
+        flash('Utilisateur introuvable', 'error')
+        return redirect(url_for('view_professionals'))
+    
+    user_plan = user['plan'] if 'plan' in user.keys() else 'gratuit'
+    dest_plan = destinataire['plan'] if 'plan' in destinataire.keys() else 'gratuit'
+    
+    # Autoriser si AU MOINS UN des deux est Premium
+    if user_plan != 'premium' and dest_plan != 'premium':
+        flash('La messagerie nécessite qu\'au moins un des deux utilisateurs soit Premium. Passez à Premium pour débloquer cette fonctionnalité!', 'error')
         return redirect(url_for('subscription'))
     
     if request.method == 'POST':
@@ -453,7 +466,6 @@ def send_message(dest_id):
             flash('Message envoyé avec succès!', 'success')
             return redirect(url_for('messages'))
     
-    destinataire = conn.execute('SELECT * FROM users WHERE id = ?', (dest_id,)).fetchone()
     return render_template('send_message.html', destinataire=destinataire)
 
 @app.route('/favoris')
@@ -509,6 +521,123 @@ def add_favori(pro_id):
     
     conn.commit()
     return redirect(request.referrer or url_for('view_professionals'))
+
+@app.route('/devis')
+def devis():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    user_plan = user['plan'] if 'plan' in user.keys() else 'gratuit'
+    user_role = user['role']
+    
+    if user_role == 'user':
+        # Clients: voir leurs demandes de devis
+        mes_devis = conn.execute('''
+            SELECT d.*, u.name as pro_name, u.categorie, u.plan as pro_plan
+            FROM devis d
+            JOIN users u ON d.pro_id = u.id
+            WHERE d.client_id = ?
+            ORDER BY d.date_demande DESC
+        ''', (session['user_id'],)).fetchall()
+        
+        # Filtrer: afficher seulement si client OU pro est Premium
+        devis_premium = [d for d in mes_devis if user_plan == 'premium' or d['pro_plan'] == 'premium']
+        return render_template('devis_client.html', devis=devis_premium, user_plan=user_plan)
+    
+    else:  # pro
+        # Pros: voir les demandes reçues
+        devis_recus = conn.execute('''
+            SELECT d.*, u.name as client_name, u.plan as client_plan
+            FROM devis d
+            JOIN users u ON d.client_id = u.id
+            WHERE d.pro_id = ?
+            ORDER BY d.date_demande DESC
+        ''', (session['user_id'],)).fetchall()
+        
+        # Filtrer: afficher seulement si pro OU client est Premium
+        devis_premium = [d for d in devis_recus if user_plan == 'premium' or d['client_plan'] == 'premium']
+        return render_template('devis_pro.html', devis=devis_premium, user_plan=user_plan)
+
+@app.route('/demander_devis/<int:pro_id>', methods=['GET', 'POST'])
+def demander_devis(pro_id):
+    if 'user_id' not in session or session.get('role') != 'user':
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    pro = conn.execute('SELECT * FROM users WHERE id = ? AND role = "pro"', (pro_id,)).fetchone()
+    
+    if not pro:
+        flash('Professionnel introuvable', 'error')
+        return redirect(url_for('view_professionals'))
+    
+    user_plan = user['plan'] if 'plan' in user.keys() else 'gratuit'
+    pro_plan = pro['plan'] if 'plan' in pro.keys() else 'gratuit'
+    
+    # Autoriser si AU MOINS UN des deux est Premium
+    if user_plan != 'premium' and pro_plan != 'premium':
+        flash('La gestion de devis nécessite qu\'au moins un des deux utilisateurs soit Premium. Passez à Premium pour débloquer cette fonctionnalité!', 'error')
+        return redirect(url_for('subscription'))
+    
+    if request.method == 'POST':
+        titre = request.form.get('titre', '').strip()
+        description = request.form.get('description', '').strip()
+        
+        if not titre:
+            flash('Le titre du devis est obligatoire', 'error')
+            return render_template('demander_devis.html', pro=pro)
+        
+        conn.execute('''
+            INSERT INTO devis (client_id, pro_id, titre, description)
+            VALUES (?, ?, ?, ?)
+        ''', (session['user_id'], pro_id, titre, description))
+        conn.commit()
+        
+        flash(f'Demande de devis envoyée à {pro["name"]} avec succès!', 'success')
+        return redirect(url_for('devis'))
+    
+    return render_template('demander_devis.html', pro=pro)
+
+@app.route('/repondre_devis/<int:devis_id>', methods=['GET', 'POST'])
+def repondre_devis(devis_id):
+    if 'user_id' not in session or session.get('role') != 'pro':
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    devis_item = conn.execute('''
+        SELECT d.*, u.name as client_name
+        FROM devis d
+        JOIN users u ON d.client_id = u.id
+        WHERE d.id = ? AND d.pro_id = ?
+    ''', (devis_id, session['user_id'])).fetchone()
+    
+    if not devis_item:
+        flash('Devis introuvable', 'error')
+        return redirect(url_for('devis'))
+    
+    if request.method == 'POST':
+        montant = request.form.get('montant', '').strip()
+        delai = request.form.get('delai', '').strip()
+        notes_pro = request.form.get('notes_pro', '').strip()
+        
+        if not montant:
+            flash('Le montant est obligatoire', 'error')
+            return render_template('repondre_devis.html', devis=devis_item)
+        
+        from datetime import datetime
+        conn.execute('''
+            UPDATE devis
+            SET montant = ?, delai = ?, notes_pro = ?, statut = 'repondu', date_reponse = ?
+            WHERE id = ?
+        ''', (float(montant), delai, notes_pro, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), devis_id))
+        conn.commit()
+        
+        flash(f'Devis répondu avec succès!', 'success')
+        return redirect(url_for('devis'))
+    
+    return render_template('repondre_devis.html', devis=devis_item)
 
 @app.route('/logout')
 def logout():
@@ -1089,6 +1218,21 @@ def init_db():
         actif INTEGER DEFAULT 1,
         ordre INTEGER DEFAULT 0,
         date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE TABLE IF NOT EXISTS devis (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        client_id INTEGER NOT NULL,
+        pro_id INTEGER NOT NULL,
+        titre TEXT NOT NULL,
+        description TEXT,
+        date_demande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        statut TEXT DEFAULT 'en_attente',
+        montant REAL,
+        delai TEXT,
+        notes_pro TEXT,
+        date_reponse TIMESTAMP,
+        FOREIGN KEY (client_id) REFERENCES users(id),
+        FOREIGN KEY (pro_id) REFERENCES users(id)
     );
     ''')
     try:

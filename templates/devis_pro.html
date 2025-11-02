@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Demandes de Devis{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>📝 Demandes de Devis Reçues</h2>
+    
+    {% if user_plan != 'premium' %}
+    <div class="alert alert-warning">
+        <strong>💡 Astuce :</strong> La gestion de devis fonctionne si vous OU le client êtes Premium. Passez à Premium pour débloquer tous les avantages !
+    </div>
+    {% endif %}
+    
+    {% if devis|length == 0 %}
+    <div class="alert alert-info mt-3">
+        Vous n'avez reçu aucune demande de devis pour le moment.
+    </div>
+    {% else %}
+    <div class="row mt-4">
+        {% for d in devis %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>{{ d.titre }}</strong>
+                    {% if d.statut == 'en_attente' %}
+                        <span class="badge bg-warning">⏳ À répondre</span>
+                    {% elif d.statut == 'repondu' %}
+                        <span class="badge bg-success">✅ Répondu</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <p><strong>Client :</strong> {{ d.client_name }}</p>
+                    <p><strong>Description :</strong> {{ d.description if d.description else '-' }}</p>
+                    <p><small class="text-muted">Reçu le : {{ d.date_demande }}</small></p>
+                    
+                    {% if d.statut == 'en_attente' %}
+                    <a href="{{ url_for('repondre_devis', devis_id=d.id) }}" class="btn btn-primary btn-sm mt-2">💬 Répondre</a>
+                    {% else %}
+                    <hr>
+                    <h6>💰 Votre réponse :</h6>
+                    <p><strong>Montant :</strong> {{ d.montant }} FCFA</p>
+                    <p><strong>Délai :</strong> {{ d.delai if d.delai else '-' }}</p>
+                    <p><strong>Notes :</strong> {{ d.notes_pro if d.notes_pro else '-' }}</p>
+                    <p><small class="text-muted">Répondu le : {{ d.date_reponse }}</small></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

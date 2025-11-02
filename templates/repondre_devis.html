@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Répondre au Devis{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>💬 Répondre au Devis</h2>
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <strong>{{ devis.titre }}</strong>
+        </div>
+        <div class="card-body">
+            <p><strong>Client :</strong> {{ devis.client_name }}</p>
+            <p><strong>Description :</strong> {{ devis.description if devis.description else '-' }}</p>
+            <p><small class="text-muted">Demandé le : {{ devis.date_demande }}</small></p>
+        </div>
+    </div>
+    
+    <form method="post" class="mt-4">
+        <div class="mb-3">
+            <label for="montant" class="form-label">Montant (FCFA) *</label>
+            <input type="number" class="form-control" id="montant" name="montant" required 
+                   placeholder="Ex: 50000" min="0" step="1">
+        </div>
+        
+        <div class="mb-3">
+            <label for="delai" class="form-label">Délai de réalisation</label>
+            <input type="text" class="form-control" id="delai" name="delai" 
+                   placeholder="Ex: 3 jours, 1 semaine, 2 mois...">
+        </div>
+        
+        <div class="mb-3">
+            <label for="notes_pro" class="form-label">Notes / Détails supplémentaires</label>
+            <textarea class="form-control" id="notes_pro" name="notes_pro" rows="5"
+                      placeholder="Précisions, conditions, matériaux inclus..."></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-success">✅ Envoyer le devis</button>
+        <a href="{{ url_for('devis') }}" class="btn btn-secondary">Retour</a>
+    </form>
+</div>
+{% endblock %}
