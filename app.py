@@ -479,6 +479,34 @@ def messages():
     
     return render_template('messages.html', received=received_premium, sent=sent_premium, user_plan=user_plan)
 
+@app.route('/nouveau_message')
+def nouveau_message():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    user_plan = user['plan'] if 'plan' in user.keys() else 'gratuit'
+    
+    # Clients: lister les professionnels
+    # Pros: lister les clients
+    if user['role'] == 'user':
+        destinataires = conn.execute('''
+            SELECT id, name, localisation, categorie, plan
+            FROM users 
+            WHERE role = 'pro'
+            ORDER BY name
+        ''').fetchall()
+    else:
+        destinataires = conn.execute('''
+            SELECT id, name, localisation, plan
+            FROM users 
+            WHERE role = 'user'
+            ORDER BY name
+        ''').fetchall()
+    
+    return render_template('nouveau_message.html', destinataires=destinataires, user_plan=user_plan)
+
 @app.route('/send_message/<int:dest_id>', methods=['GET', 'POST'])
 def send_message(dest_id):
     if 'user_id' not in session:

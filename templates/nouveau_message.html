@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Nouveau message{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('messages') }}" class="btn btn-outline-secondary btn-sm">← Retour aux messages</a>
+</div>
+
+<h3 class="mb-4">✉️ Nouveau message</h3>
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Choisir un destinataire</h5>
+    </div>
+    <div class="card-body">
+        {% if destinataires %}
+            <div class="list-group">
+                {% for dest in destinataires %}
+                <a href="{{ url_for('send_message', dest_id=dest.id) }}" class="list-group-item list-group-item-action">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">{{ dest.name }}</h6>
+                            <small class="text-muted">
+                                {% if dest.categorie %}
+                                    {{ dest.categorie }} - 
+                                {% endif %}
+                                {{ dest.localisation or 'Localisation non renseignée' }}
+                            </small>
+                        </div>
+                        <div>
+                            {% if dest.plan == 'premium' %}
+                                <span class="badge bg-warning text-dark">⭐ Premium</span>
+                            {% endif %}
+                            <span class="badge bg-primary">Envoyer →</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p class="mb-0">Aucun utilisateur disponible pour le moment.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <strong>💡 Info :</strong> 
+    {% if session.role == 'user' %}
+        Envoyez un message à un professionnel pour discuter de votre projet avant de prendre rendez-vous.
+    {% else %}
+        Contactez vos clients pour clarifier leurs besoins ou leur envoyer des informations complémentaires.
+    {% endif %}
+</div>
+{% endblock %}

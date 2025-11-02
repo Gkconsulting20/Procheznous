@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Messagerie{% endblock %}
 {% block content %}
-<h3 class="mb-4">💬 Messagerie Premium</h3>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">💬 Messagerie Premium</h3>
+    <a href="{{ url_for('nouveau_message') }}" class="btn btn-primary">
+        ✉️ Nouveau message
+    </a>
+</div>
 
 <div class="row">
     <div class="col-md-6 mb-4">
