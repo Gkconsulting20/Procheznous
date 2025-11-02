@@ -26,7 +26,8 @@
                     <th>Pays</th>
                     <th>Ville</th>
                     <th>Plan</th>
-                    <th>Statut</th>
+                    <th>Vérification</th>
+                    <th>Compte</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -65,6 +66,23 @@
                         {% endif %}
                     </td>
                     <td>
+                        {% set statut = user.statut_compte if user.statut_compte else 'actif' %}
+                        {% if statut == 'bloque' %}
+                            <span class="badge bg-danger">🔒 Bloqué</span>
+                        {% else %}
+                            <span class="badge bg-success">✅ Actif</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{{ url_for('admin_toggle_user_status', id=user.id) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir {% if statut == 'actif' %}bloquer{% else %}débloquer{% endif %} cet utilisateur ?');">
+                            <button type="submit" class="btn btn-sm {% if statut == 'actif' %}btn-warning{% else %}btn-info{% endif %}" {% if user.id == session.user_id %}disabled title="Vous ne pouvez pas modifier votre propre statut"{% endif %}>
+                                {% if statut == 'actif' %}
+                                    🔒 Bloquer
+                                {% else %}
+                                    🔓 Débloquer
+                                {% endif %}
+                            </button>
+                        </form>
                         <form method="post" action="{{ url_for('admin_delete_user', id=user.id) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.');">
                             <button type="submit" class="btn btn-sm btn-danger" {% if user.id == session.user_id %}disabled title="Vous ne pouvez pas supprimer votre propre compte"{% endif %}>
                                 🗑️ Supprimer

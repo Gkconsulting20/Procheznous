@@ -116,6 +116,12 @@ def login():
                               (identifier, identifier)).fetchone()
         
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8') if isinstance(user['password'], str) else user['password']):
+            # Vérifier si le compte est bloqué
+            statut = user['statut_compte'] if 'statut_compte' in user.keys() else 'actif'
+            if statut == 'bloque':
+                flash('Votre compte a été bloqué. Veuillez contacter l\'administrateur.', 'error')
+                return render_template('login.html')
+            
             session['user_id'] = user['id']
             session['role'] = user['role']
             session['plan'] = user['plan']
@@ -931,7 +937,7 @@ def admin_users():
     
     conn = get_db()
     users = conn.execute('''
-        SELECT id, name, email, phone, role, localisation, pays, categorie, plan, statut_verification
+        SELECT id, name, email, phone, role, localisation, pays, categorie, plan, statut_verification, statut_compte
         FROM users
         ORDER BY id DESC
     ''').fetchall()
@@ -1023,6 +1029,34 @@ def admin_delete_user(id):
     flash(f'Utilisateur "{user["name"]}" supprimé avec succès!', 'success')
     return redirect(url_for('admin_users'))
 
+@app.route('/admin/users/toggle_status/<int:id>', methods=['POST'])
+def admin_toggle_user_status(id):
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    if id == session.get('user_id'):
+        flash('Vous ne pouvez pas modifier le statut de votre propre compte!', 'error')
+        return redirect(url_for('admin_users'))
+    
+    conn = get_db()
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (id,)).fetchone()
+    
+    if not user:
+        flash('Utilisateur introuvable', 'error')
+        return redirect(url_for('admin_users'))
+    
+    # Basculer le statut
+    current_status = user['statut_compte'] if 'statut_compte' in user.keys() else 'actif'
+    new_status = 'bloque' if current_status == 'actif' else 'actif'
+    
+    conn.execute('UPDATE users SET statut_compte = ? WHERE id = ?', (new_status, id))
+    conn.commit()
+    
+    action = 'bloqué' if new_status == 'bloque' else 'débloqué'
+    flash(f'Utilisateur "{user["name"]}" {action} avec succès!', 'success')
+    return redirect(url_for('admin_users'))
+
 def init_db():
     conn = get_db()
     conn.executescript('''
@@ -1094,6 +1128,11 @@ def init_db():
         pass
     try:
         conn.execute('ALTER TABLE users ADD COLUMN pays TEXT DEFAULT "Togo"')
+        conn.commit()
+    except:
+        pass
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN statut_compte TEXT DEFAULT "actif"')
         conn.commit()
     except:
         pass
