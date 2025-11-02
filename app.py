@@ -48,22 +48,40 @@ def inject_user_features():
     has_devis = False
     
     if 'user_id' in session:
-        conn = get_db()
-        user_id = session['user_id']
-        
-        # Vérifier si l'utilisateur a des conversations actives
-        conversations = conn.execute('''
-            SELECT COUNT(*) as count FROM messages 
-            WHERE sender_id = ? OR receiver_id = ?
-        ''', (user_id, user_id)).fetchone()
-        has_messages = conversations['count'] > 0
-        
-        # Vérifier si l'utilisateur a des devis
-        devis_count = conn.execute('''
-            SELECT COUNT(*) as count FROM devis 
-            WHERE client_id = ? OR pro_id = ?
-        ''', (user_id, user_id)).fetchone()
-        has_devis = devis_count['count'] > 0
+        try:
+            conn = get_db()
+            user_id = session['user_id']
+            
+            # Vérifier si l'utilisateur a des conversations actives (compatible ancien/nouveau format)
+            try:
+                # Essayer nouveau format (sender_id/receiver_id)
+                conversations = conn.execute('''
+                    SELECT COUNT(*) as count FROM messages 
+                    WHERE sender_id = ? OR receiver_id = ?
+                ''', (user_id, user_id)).fetchone()
+                has_messages = conversations['count'] > 0
+            except:
+                # Fallback ancien format (expediteur_id/destinataire_id)
+                try:
+                    conversations = conn.execute('''
+                        SELECT COUNT(*) as count FROM messages 
+                        WHERE expediteur_id = ? OR destinataire_id = ?
+                    ''', (user_id, user_id)).fetchone()
+                    has_messages = conversations['count'] > 0
+                except:
+                    has_messages = False
+            
+            # Vérifier si l'utilisateur a des devis
+            try:
+                devis_count = conn.execute('''
+                    SELECT COUNT(*) as count FROM devis 
+                    WHERE client_id = ? OR pro_id = ?
+                ''', (user_id, user_id)).fetchone()
+                has_devis = devis_count['count'] > 0
+            except:
+                has_devis = False
+        except:
+            pass
     
     return dict(has_messages=has_messages, has_devis=has_devis)
 
