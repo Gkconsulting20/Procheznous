@@ -5,10 +5,12 @@ import bcrypt
 import os
 import secrets
 from datetime import datetime, timedelta
+from functools import wraps
 from utils import normalize_phone_number, validate_phone_number, format_phone_display
 from fedapay_service import fedapay_service
 from email_service import email_service
 from sms_service import sms_service
+from subscription_service import check_subscription_status, is_premium_active, get_warning_message, renew_subscription
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
@@ -40,6 +42,64 @@ def get_categories():
     conn = get_db()
     categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
     return [cat['nom'] for cat in categories]
+
+def premium_required(f):
+    """
+    Décorateur pour protéger les routes nécessitant un abonnement Premium ACTIF
+    Vérifie l'expiration et redirige vers la page d'upgrade si expiré
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Vous devez être connecté pour accéder à cette fonctionnalité', 'error')
+            return redirect(url_for('login'))
+        
+        # Vérifier le statut de l'abonnement
+        if not is_premium_active(session['user_id']):
+            status = check_subscription_status(session['user_id'])
+            if status and status['subscription_status'] == 'expired':
+                flash('⚠️ Votre abonnement Premium a expiré. Renouvelez pour continuer à profiter de cette fonctionnalité !', 'warning')
+            else:
+                flash('Cette fonctionnalité est réservée aux membres Premium', 'info')
+            return redirect(url_for('upgrade_premium'))
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.before_request
+def update_subscription_status():
+    """
+    Middleware exécuté avant chaque requête
+    Met à jour le statut d'abonnement dans la session
+    """
+    # Ne rien faire si pas de session utilisateur
+    if 'user_id' not in session:
+        return
+    
+    # Ne rien faire pour les requêtes statiques
+    if request.endpoint and request.endpoint.startswith('static'):
+        return
+    
+    try:
+        status = check_subscription_status(session['user_id'])
+        if status:
+            # Mettre à jour le plan dans la session basé sur le statut actuel
+            if status['is_premium_active']:
+                session['plan'] = 'premium'
+            else:
+                session['plan'] = 'gratuit'
+            
+            # Stocker les infos d'abonnement pour affichage
+            session['subscription_info'] = {
+                'status': status['subscription_status'],
+                'expires_at': status['expires_at'],
+                'days_left': status['days_until_expiry'],
+                'needs_warning': status['needs_warning'],
+                'warning_level': status['warning_level']
+            }
+    except Exception:
+        # En cas d'erreur, ne pas crasher la requête
+        pass
 
 @app.context_processor
 def inject_user_features():
@@ -396,7 +456,15 @@ def subscription():
         return redirect(url_for('login'))
     conn = get_db()
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
-    return render_template('subscription.html', user=user)
+    
+    # Récupérer le statut d'abonnement
+    subscription_status = check_subscription_status(session['user_id'])
+    
+    # Récupérer l'historique des abonnements
+    from subscription_service import get_subscription_history
+    history = get_subscription_history(session['user_id'])
+    
+    return render_template('subscription.html', user=user, subscription_status=subscription_status, history=history)
 
 @app.route('/upgrade_premium', methods=['GET', 'POST'])
 def upgrade_premium():
@@ -1009,10 +1077,19 @@ def fedapay_callback():
                 if trans_status == 'approved':
                     user_id = session.get('user_id')
                     if user_id:
-                        conn = get_db()
-                        conn.execute('UPDATE users SET plan = ? WHERE id = ?', ('premium', user_id))
-                        conn.commit()
-                        flash('Paiement confirmé ! Vous êtes maintenant membre Premium 🌟', 'success')
+                        # Renouveler l'abonnement avec le service
+                        result = renew_subscription(
+                            user_id, 
+                            duration_days=30, 
+                            payment_reference=transaction_id,
+                            amount=1000
+                        )
+                        if result['success']:
+                            # Mettre à jour la session
+                            session['plan'] = 'premium'
+                            flash('Paiement confirmé ! Vous êtes maintenant membre Premium 🌟', 'success')
+                        else:
+                            flash('Paiement confirmé mais erreur lors de l\'activation. Contactez le support.', 'warning')
                     return redirect(url_for('dashboard'))
                 elif trans_status == 'declined':
                     flash('Paiement refusé. Veuillez réessayer.', 'error')
@@ -1028,10 +1105,18 @@ def fedapay_callback():
                 return redirect(url_for('subscription'))
         
         if status == 'approved' and 'user_id' in session:
-            conn = get_db()
-            conn.execute('UPDATE users SET plan = ? WHERE id = ?', ('premium', session['user_id']))
-            conn.commit()
-            flash('Vous êtes maintenant membre Premium 🌟 (Mode démo - sans vérification FedaPay)', 'success')
+            # Renouveler l'abonnement en mode démo
+            result = renew_subscription(
+                session['user_id'], 
+                duration_days=30, 
+                payment_reference=f'demo_{transaction_id}',
+                amount=1000
+            )
+            if result['success']:
+                session['plan'] = 'premium'
+                flash('Vous êtes maintenant membre Premium 🌟 (Mode démo - sans vérification FedaPay)', 'success')
+            else:
+                flash('Erreur lors de l\'activation. Contactez le support.', 'warning')
         else:
             flash('Mode démo : FedaPay non configuré', 'warning')
         
@@ -1059,8 +1144,12 @@ def fedapay_callback():
                 ''', (transaction_id,)).fetchone()
                 
                 if user:
-                    conn.execute('UPDATE users SET plan = ? WHERE id = ?', ('premium', user['id']))
-                    conn.commit()
+                    renew_subscription(
+                        user['id'], 
+                        duration_days=30, 
+                        payment_reference=transaction_id,
+                        amount=1000
+                    )
             
             return jsonify({'status': 'success'}), 200
         
