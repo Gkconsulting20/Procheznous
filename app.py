@@ -463,14 +463,14 @@ def messages():
         SELECT m.*, u.name as expediteur_name, u.plan as expediteur_plan FROM messages m
         JOIN users u ON m.expediteur_id = u.id
         WHERE m.destinataire_id = ?
-        ORDER BY m.date DESC
+        ORDER BY m.date_envoi DESC
     ''', (session['user_id'],)).fetchall()
     
     sent = conn.execute('''
         SELECT m.*, u.name as destinataire_name, u.plan as destinataire_plan FROM messages m
         JOIN users u ON m.destinataire_id = u.id
         WHERE m.expediteur_id = ?
-        ORDER BY m.date DESC
+        ORDER BY m.date_envoi DESC
     ''', (session['user_id'],)).fetchall()
     
     # Filtrer: afficher seulement si l'utilisateur OU son interlocuteur est Premium
@@ -501,11 +501,10 @@ def send_message(dest_id):
         return redirect(url_for('subscription'))
     
     if request.method == 'POST':
-        from datetime import datetime
         contenu = request.form.get('contenu', '').strip()
         if contenu:
-            conn.execute('INSERT INTO messages (expediteur_id, destinataire_id, contenu, date) VALUES (?, ?, ?, ?)',
-                       (session['user_id'], dest_id, contenu, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+            conn.execute('INSERT INTO messages (expediteur_id, destinataire_id, contenu) VALUES (?, ?, ?)',
+                       (session['user_id'], dest_id, contenu))
             conn.commit()
             flash('Message envoyé avec succès!', 'success')
             return redirect(url_for('messages'))
