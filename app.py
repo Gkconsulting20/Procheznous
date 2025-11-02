@@ -1390,11 +1390,18 @@ def admin_delete_user(id):
     
     # Supprimer toutes les données liées (avec gestion d'erreur pour tables manquantes)
     try:
-        conn.execute('DELETE FROM rendezvous WHERE client_id = ? OR pro_id = ?', (id, id))
+        # Sur PythonAnywhere: rendezvous.slot_id → slots.user_id
+        conn.execute('DELETE FROM rendezvous WHERE client_id = ?', (id,))
+        conn.execute('''
+            DELETE FROM rendezvous WHERE slot_id IN (
+                SELECT id FROM slots WHERE user_id = ?
+            )
+        ''', (id,))
     except: pass
     
     try:
-        conn.execute('DELETE FROM slots WHERE pro_id = ?', (id,))
+        # Sur PythonAnywhere: slots.user_id (pas pro_id)
+        conn.execute('DELETE FROM slots WHERE user_id = ?', (id,))
     except: pass
     
     try:
