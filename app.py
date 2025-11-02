@@ -1235,10 +1235,45 @@ def admin_delete_user(id):
         flash('Utilisateur introuvable', 'error')
         return redirect(url_for('admin_users'))
     
-    conn.execute('DELETE FROM rendezvous WHERE client_id = ? OR pro_id = ?', (id, id))
-    conn.execute('DELETE FROM slots WHERE pro_id = ?', (id,))
-    conn.execute('DELETE FROM avis WHERE client_id = ? OR pro_id = ?', (id, id))
-    conn.execute('DELETE FROM documents_verification WHERE user_id = ?', (id,))
+    # Supprimer toutes les données liées (avec gestion d'erreur pour tables manquantes)
+    try:
+        conn.execute('DELETE FROM rendezvous WHERE client_id = ? OR pro_id = ?', (id, id))
+    except: pass
+    
+    try:
+        conn.execute('DELETE FROM slots WHERE pro_id = ?', (id,))
+    except: pass
+    
+    try:
+        conn.execute('DELETE FROM avis WHERE client_id = ? OR pro_id = ?', (id, id))
+    except: pass
+    
+    try:
+        conn.execute('DELETE FROM documents_verification WHERE user_id = ?', (id,))
+    except: pass
+    
+    try:
+        conn.execute('DELETE FROM devis WHERE client_id = ? OR pro_id = ?', (id, id))
+    except: pass
+    
+    try:
+        # Essayer nouveau format (sender_id/receiver_id)
+        conn.execute('DELETE FROM messages WHERE sender_id = ? OR receiver_id = ?', (id, id))
+    except:
+        # Fallback ancien format (expediteur_id/destinataire_id)
+        try:
+            conn.execute('DELETE FROM messages WHERE expediteur_id = ? OR destinataire_id = ?', (id, id))
+        except: pass
+    
+    try:
+        conn.execute('DELETE FROM favoris WHERE client_id = ? OR pro_id = ?', (id, id))
+    except: pass
+    
+    try:
+        conn.execute('DELETE FROM profils_pro WHERE user_id = ?', (id,))
+    except: pass
+    
+    # Supprimer l'utilisateur
     conn.execute('DELETE FROM users WHERE id = ?', (id,))
     conn.commit()
     
