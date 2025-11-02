@@ -319,14 +319,15 @@ def book(pro_id):
     conn = get_db()
     if request.method == 'POST':
         slot_id = request.form['slot_id']
-        conn.execute('INSERT INTO rendezvous (pro_id, client_id, date) SELECT pro_id, ?, date FROM slots WHERE id = ?',
-                     (session['user_id'], slot_id))
-        conn.execute('DELETE FROM slots WHERE id = ?', (slot_id,))
+        # Créer le rendez-vous et marquer le slot comme indisponible
+        conn.execute('INSERT INTO rendezvous (slot_id, client_id, statut) VALUES (?, ?, ?)',
+                     (slot_id, session['user_id'], 'confirmé'))
+        conn.execute('UPDATE slots SET disponible = 0 WHERE id = ?', (slot_id,))
         conn.commit()
         flash('Rendez-vous réservé avec succès!', 'success')
         return redirect(url_for('dashboard'))
     pro = conn.execute('SELECT * FROM users WHERE id = ?', (pro_id,)).fetchone()
-    slots = conn.execute('SELECT * FROM slots WHERE pro_id = ?', (pro_id,)).fetchall()
+    slots = conn.execute('SELECT * FROM slots WHERE user_id = ? AND disponible = 1', (pro_id,)).fetchall()
     return render_template('book.html', pro=pro, slots=slots)
 
 @app.route('/add_slot', methods=['GET', 'POST'])
@@ -334,10 +335,18 @@ def add_slot():
     if 'user_id' not in session or session['role'] != 'pro':
         return redirect(url_for('login'))
     if request.method == 'POST':
+        date = request.form.get('date', '').strip()
+        heure = request.form.get('heure', '').strip()
+        
+        if not date or not heure:
+            flash('La date et l\'heure sont obligatoires', 'error')
+            return render_template('add_slot.html')
+        
         conn = get_db()
-        conn.execute('INSERT INTO slots (pro_id, date) VALUES (?, ?)',
-                     (session['user_id'], request.form['date']))
+        conn.execute('INSERT INTO slots (user_id, date, heure, disponible) VALUES (?, ?, ?, 1)',
+                     (session['user_id'], date, heure))
         conn.commit()
+        flash('Créneau ajouté avec succès!', 'success')
         return redirect(url_for('dashboard'))
     return render_template('add_slot.html')
 
@@ -363,10 +372,16 @@ def cancel_rdv(rdv_id):
         return redirect(url_for('login'))
     
     conn = get_db()
-    rdv = conn.execute('SELECT * FROM rendezvous WHERE id = ?', (rdv_id,)).fetchone()
+    rdv = conn.execute('''
+        SELECT r.*, s.user_id as pro_id 
+        FROM rendezvous r
+        JOIN slots s ON r.slot_id = s.id
+        WHERE r.id = ?
+    ''', (rdv_id,)).fetchone()
     
     if rdv and (rdv['client_id'] == session['user_id'] or rdv['pro_id'] == session['user_id']):
-        conn.execute('INSERT INTO slots (pro_id, date) VALUES (?, ?)', (rdv['pro_id'], rdv['date']))
+        # Rendre le slot à nouveau disponible
+        conn.execute('UPDATE slots SET disponible = 1 WHERE id = ?', (rdv['slot_id'],))
         conn.execute('DELETE FROM rendezvous WHERE id = ?', (rdv_id,))
         conn.commit()
         flash('Rendez-vous annulé avec succès. Le créneau est à nouveau disponible.', 'success')
