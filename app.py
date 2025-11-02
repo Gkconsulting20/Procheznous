@@ -742,7 +742,7 @@ def verification():
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
     documents = conn.execute('''
         SELECT * FROM documents_verification 
-        WHERE pro_id = ? 
+        WHERE user_id = ? 
         ORDER BY date_upload DESC
     ''', (session['user_id'],)).fetchall()
     
@@ -778,9 +778,9 @@ def upload_document():
         
         conn = get_db()
         conn.execute('''
-            INSERT INTO documents_verification (pro_id, type_document, nom_fichier, chemin_fichier, date_upload, statut)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (session['user_id'], type_document, filename, new_filename, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'en_attente'))
+            INSERT INTO documents_verification (user_id, type_document, chemin_fichier, statut)
+            VALUES (?, ?, ?, ?)
+        ''', (session['user_id'], type_document, new_filename, 'en_attente'))
         conn.commit()
         
         flash('Document uploadé avec succès! Il sera vérifié prochainement.', 'success')
