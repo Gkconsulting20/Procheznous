@@ -41,6 +41,32 @@ def get_categories():
     categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
     return [cat['nom'] for cat in categories]
 
+@app.context_processor
+def inject_user_features():
+    """Injecte les informations sur les fonctionnalités disponibles pour l'utilisateur"""
+    has_messages = False
+    has_devis = False
+    
+    if 'user_id' in session:
+        conn = get_db()
+        user_id = session['user_id']
+        
+        # Vérifier si l'utilisateur a des conversations actives
+        conversations = conn.execute('''
+            SELECT COUNT(*) as count FROM messages 
+            WHERE sender_id = ? OR receiver_id = ?
+        ''', (user_id, user_id)).fetchone()
+        has_messages = conversations['count'] > 0
+        
+        # Vérifier si l'utilisateur a des devis
+        devis_count = conn.execute('''
+            SELECT COUNT(*) as count FROM devis 
+            WHERE client_id = ? OR pro_id = ?
+        ''', (user_id, user_id)).fetchone()
+        has_devis = devis_count['count'] > 0
+    
+    return dict(has_messages=has_messages, has_devis=has_devis)
+
 @app.route('/')
 def index():
     return render_template('index.html')
