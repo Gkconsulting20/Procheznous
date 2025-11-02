@@ -639,6 +639,49 @@ def repondre_devis(devis_id):
     
     return render_template('repondre_devis.html', devis=devis_item)
 
+@app.route('/creer_devis', methods=['GET', 'POST'])
+def creer_devis():
+    if 'user_id' not in session or session.get('role') != 'pro':
+        flash('Cette fonctionnalité est réservée aux professionnels', 'error')
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    user_plan = conn.execute('SELECT plan FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    
+    if request.method == 'POST':
+        client_id = request.form.get('client_id', '').strip()
+        titre = request.form.get('titre', '').strip()
+        description = request.form.get('description', '').strip()
+        montant = request.form.get('montant', '').strip()
+        delai = request.form.get('delai', '').strip()
+        notes_pro = request.form.get('notes_pro', '').strip()
+        
+        if not client_id or not titre or not montant:
+            flash('Le client, le titre et le montant sont obligatoires', 'error')
+            clients = conn.execute('SELECT id, name, email, phone, plan FROM users WHERE role = "user" ORDER BY name').fetchall()
+            return render_template('creer_devis.html', clients=clients, user_plan=user_plan['plan'] if user_plan else 'gratuit')
+        
+        client = conn.execute('SELECT plan FROM users WHERE id = ?', (client_id,)).fetchone()
+        
+        if user_plan['plan'] != 'premium' and client['plan'] != 'premium':
+            flash('La gestion de devis nécessite qu\'au moins l\'un de vous soit Premium. Passez à Premium pour débloquer cette fonctionnalité!', 'error')
+            return redirect(url_for('subscription'))
+        
+        from datetime import datetime
+        conn.execute('''
+            INSERT INTO devis (client_id, pro_id, titre, description, statut, montant, delai, notes_pro, date_demande, date_reponse, type_devis)
+            VALUES (?, ?, ?, ?, 'repondu', ?, ?, ?, ?, ?, 'creation_pro')
+        ''', (client_id, session['user_id'], titre, description, float(montant), delai, notes_pro, 
+              datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
+              datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+        conn.commit()
+        
+        flash(f'Devis créé et envoyé avec succès!', 'success')
+        return redirect(url_for('devis'))
+    
+    clients = conn.execute('SELECT id, name, email, phone, plan FROM users WHERE role = "user" ORDER BY name').fetchall()
+    return render_template('creer_devis.html', clients=clients, user_plan=user_plan['plan'] if user_plan else 'gratuit')
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -1231,6 +1274,7 @@ def init_db():
         delai TEXT,
         notes_pro TEXT,
         date_reponse TIMESTAMP,
+        type_devis TEXT DEFAULT 'demande_client',
         FOREIGN KEY (client_id) REFERENCES users(id),
         FOREIGN KEY (pro_id) REFERENCES users(id)
     );
@@ -1277,6 +1321,12 @@ def init_db():
         pass
     try:
         conn.execute('ALTER TABLE users ADD COLUMN statut_compte TEXT DEFAULT "actif"')
+        conn.commit()
+    except:
+        pass
+    
+    try:
+        conn.execute('ALTER TABLE devis ADD COLUMN type_devis TEXT DEFAULT "demande_client"')
         conn.commit()
     except:
         pass

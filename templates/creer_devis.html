@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Créer un Devis{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>📝 Créer et Envoyer un Devis</h2>
+    
+    {% if user_plan != 'premium' %}
+    <div class="alert alert-warning">
+        <strong>💡 Astuce :</strong> La création de devis fonctionne si vous OU le client êtes Premium. Passez à Premium pour débloquer tous les avantages !
+    </div>
+    {% endif %}
+    
+    <form method="post" class="mt-4">
+        <div class="mb-3">
+            <label for="client_id" class="form-label">Sélectionner le client *</label>
+            <select class="form-select" id="client_id" name="client_id" required>
+                <option value="">-- Choisir un client --</option>
+                {% for client in clients %}
+                <option value="{{ client.id }}">
+                    {{ client.name }} 
+                    {% if client.email %}({{ client.email }}){% endif %}
+                    {% if client.phone %}({{ client.phone }}){% endif %}
+                    {% if client.plan == 'premium' %}💎{% endif %}
+                </option>
+                {% endfor %}
+            </select>
+            <small class="text-muted">💎 = Client Premium</small>
+        </div>
+        
+        <div class="mb-3">
+            <label for="titre" class="form-label">Titre du devis *</label>
+            <input type="text" class="form-control" id="titre" name="titre" required 
+                   placeholder="Ex: Installation électrique complète">
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4"
+                      placeholder="Détails du service proposé..."></textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="montant" class="form-label">Montant (FCFA) *</label>
+            <input type="number" class="form-control" id="montant" name="montant" required 
+                   placeholder="Ex: 50000" min="0" step="1">
+        </div>
+        
+        <div class="mb-3">
+            <label for="delai" class="form-label">Délai de réalisation</label>
+            <input type="text" class="form-control" id="delai" name="delai" 
+                   placeholder="Ex: 3 jours, 1 semaine, 2 mois...">
+        </div>
+        
+        <div class="mb-3">
+            <label for="notes_pro" class="form-label">Notes / Détails supplémentaires</label>
+            <textarea class="form-control" id="notes_pro" name="notes_pro" rows="5"
+                      placeholder="Précisions, conditions, matériaux inclus, garanties..."></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-success">✅ Créer et envoyer le devis</button>
+        <a href="{{ url_for('devis') }}" class="btn btn-secondary">Retour</a>
+    </form>
+</div>
+{% endblock %}

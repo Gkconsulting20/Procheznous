@@ -22,17 +22,30 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <strong>{{ d.titre }}</strong>
-                    {% if d.statut == 'en_attente' %}
-                        <span class="badge bg-warning">⏳ En attente</span>
-                    {% elif d.statut == 'repondu' %}
-                        <span class="badge bg-success">✅ Répondu</span>
-                    {% endif %}
+                    <div>
+                        {% if d.type_devis == 'creation_pro' %}
+                            <span class="badge bg-info">📨 Reçu</span>
+                        {% else %}
+                            <span class="badge bg-primary">📤 Demandé</span>
+                        {% endif %}
+                        {% if d.statut == 'en_attente' %}
+                            <span class="badge bg-warning">⏳ En attente</span>
+                        {% elif d.statut == 'repondu' %}
+                            <span class="badge bg-success">✅ Répondu</span>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="card-body">
                     <p><strong>Professionnel :</strong> {{ d.pro_name }}</p>
                     <p><strong>Catégorie :</strong> {{ d.categorie }}</p>
                     <p><strong>Description :</strong> {{ d.description if d.description else '-' }}</p>
-                    <p><small class="text-muted">Demandé le : {{ d.date_demande }}</small></p>
+                    <p><small class="text-muted">
+                        {% if d.type_devis == 'creation_pro' %}
+                            Reçu le : {{ d.date_demande }}
+                        {% else %}
+                            Demandé le : {{ d.date_demande }}
+                        {% endif %}
+                    </small></p>
                     
                     {% if d.statut == 'repondu' %}
                     <hr>
