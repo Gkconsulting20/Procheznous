@@ -1,44 +1,128 @@
 {% extends "base.html" %}{% block title %}Tableau de bord Pro{% endblock %}{% block content %}
 <h3>Bienvenue {{ user.name }}</h3>
-<p class="text-muted">Gérez vos créneaux et rendez-vous</p>
+<p class="text-muted">Gérez vos créneaux, rendez-vous et trouvez d'autres professionnels</p>
 
 <div class="row mt-4">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h5>📅 Vos rendez-vous</h5>
+    <!-- Rendez-vous -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">📅 Vos rendez-vous</h5>
             </div>
             <div class="card-body">
                 {% if rdvs %}
-                    <div class="list-group">
+                    <div class="list-group list-group-flush">
                         {% for rdv in rdvs %}
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
+                        <div class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
                                 <strong>{{ rdv.client }}</strong>
-                                <div class="text-muted">{{ rdv.date }}</div>
+                                <div class="text-muted small">📞 {{ rdv.client_phone or rdv.client_email }}</div>
+                                <div class="text-primary"><strong>{{ rdv.date }}</strong> à <strong>{{ rdv.heure }}</strong></div>
                             </div>
                             <form method="POST" action="{{ url_for('cancel_rdv', rdv_id=rdv.id) }}" style="display:inline;">
                                 <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Voulez-vous vraiment annuler ce rendez-vous?')">
-                                    ❌ Annuler
+                                    ❌
                                 </button>
                             </form>
                         </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-muted">Aucun rendez-vous pour le moment</p>
+                    <p class="text-muted text-center py-3">Aucun rendez-vous pour le moment</p>
                 {% endif %}
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body text-center">
-                <h5>Gérer vos créneaux</h5>
-                <p class="text-muted">Ajoutez de nouveaux créneaux disponibles</p>
-                <a href="{{ url_for('add_slot') }}" class="btn btn-primary w-100">
-                    ➕ Ajouter un créneau
+
+    <!-- Mes créneaux -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">🕐 Mes créneaux</h5>
+                <a href="{{ url_for('add_slot') }}" class="btn btn-light btn-sm">
+                    ➕ Ajouter
                 </a>
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                {% if my_slots %}
+                    <div class="list-group list-group-flush">
+                        {% for slot in my_slots %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ slot.date }}</strong> à {{ slot.heure }}
+                            </div>
+                            {% if slot.disponible %}
+                                <span class="badge bg-success">Disponible</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Réservé</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">
+                        Aucun créneau créé<br>
+                        <a href="{{ url_for('add_slot') }}" class="btn btn-primary btn-sm mt-2">
+                            ➕ Créer mon premier créneau
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Autres professionnels -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">👥 Autres professionnels (pour collaboration)</h5>
+                <a href="{{ url_for('view_professionals') }}" class="btn btn-light btn-sm">
+                    Voir tous
+                </a>
+            </div>
+            <div class="card-body">
+                {% if other_pros %}
+                    <div class="row">
+                        {% for pro in other_pros %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card h-100 border-light shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        {{ pro.name }}
+                                        {% if pro.statut_verification == 'verifie' %}
+                                            <span class="badge bg-success" title="Professionnel vérifié">✓</span>
+                                        {% endif %}
+                                    </h6>
+                                    <p class="card-text mb-1">
+                                        <strong>{{ pro.categorie }}</strong><br>
+                                        <small class="text-muted">📍 {{ pro.localisation }}</small>
+                                    </p>
+                                    {% if pro.note_moyenne > 0 %}
+                                        <div class="mb-2">
+                                            <span class="badge bg-warning text-dark">
+                                                ⭐ {{ "%.1f"|format(pro.note_moyenne) }} ({{ pro.nb_avis }} avis)
+                                            </span>
+                                        </div>
+                                    {% endif %}
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ url_for('book', pro_id=pro.id) }}" class="btn btn-sm btn-primary">
+                                            📅 Prendre RDV
+                                        </a>
+                                        <div class="small text-muted">
+                                            📞 {{ pro.phone }}<br>
+                                            📧 {{ pro.email }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Aucun autre professionnel disponible</p>
+                {% endif %}
             </div>
         </div>
     </div>

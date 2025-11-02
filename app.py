@@ -242,14 +242,36 @@ def dashboard():
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
     if user['role'] == 'pro':
         rdvs = conn.execute('''
-            SELECT r.id, s.date, s.heure, u.name as client 
+            SELECT r.id, s.date, s.heure, u.name as client, u.email as client_email, u.phone as client_phone
             FROM rendezvous r
             JOIN slots s ON r.slot_id = s.id
             JOIN users u ON r.client_id = u.id 
             WHERE s.user_id = ?
             ORDER BY s.date DESC, s.heure DESC
         ''', (user['id'],)).fetchall()
-        return render_template('dashboard_pro.html', user=user, rdvs=rdvs)
+        
+        # Charger aussi les créneaux disponibles du pro
+        my_slots = conn.execute('''
+            SELECT id, date, heure, disponible
+            FROM slots 
+            WHERE user_id = ?
+            ORDER BY date ASC, heure ASC
+        ''', (user['id'],)).fetchall()
+        
+        # Charger les autres professionnels (pour collaborations)
+        other_pros = conn.execute('''
+            SELECT u.id, u.name, u.localisation, u.categorie, u.phone, u.email, u.statut_verification,
+                   COALESCE(AVG(a.note), 0) as note_moyenne,
+                   COUNT(a.id) as nb_avis
+            FROM users u
+            LEFT JOIN avis a ON u.id = a.pro_id
+            WHERE u.role = 'pro' AND u.id != ?
+            GROUP BY u.id
+            ORDER BY note_moyenne DESC
+            LIMIT 10
+        ''', (user['id'],)).fetchall()
+        
+        return render_template('dashboard_pro.html', user=user, rdvs=rdvs, my_slots=my_slots, other_pros=other_pros)
     else:
         rdvs = conn.execute('''
             SELECT r.id, s.date, s.heure, u.name as pro_name 
