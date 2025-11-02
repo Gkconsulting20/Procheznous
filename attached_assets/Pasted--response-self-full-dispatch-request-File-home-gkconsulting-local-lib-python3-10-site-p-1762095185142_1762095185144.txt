@@ -1,0 +1,455 @@
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 41, in register
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 32, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 14:09:55,354: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 141, in view_professionals
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 32, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 14:09:59,395: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 141, in view_professionals
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 32, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 14:10:20,172: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 141, in view_professionals
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 32, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 14:11:03,506: Exception on /register [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 41, in register
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 32, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 14:16:47,416: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 141, in view_professionals
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 32, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 14:16:51,472: Exception on /register [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 41, in register
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 32, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 14:21:02,901: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 141, in view_professionals
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 32, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 15:45:37,744: Exception on /dashboard [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 131, in dashboard
+    rdvs = conn.execute('''
+sqlite3.OperationalError: no such column: s.heure
+2025-11-01 15:46:40,650: Exception on /dashboard [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 131, in dashboard
+    rdvs = conn.execute('''
+sqlite3.OperationalError: no such column: s.heure
+2025-11-01 15:46:49,505: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 154, in view_professionals
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 39, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 15:46:59,964: Exception on /register [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 48, in register
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 39, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 15:47:12,120: Exception on /dashboard [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 141, in dashboard
+    rdvs = conn.execute('''
+sqlite3.OperationalError: no such column: s.heure
+2025-11-01 15:47:16,465: Exception on /dashboard [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 141, in dashboard
+    rdvs = conn.execute('''
+sqlite3.OperationalError: no such column: s.heure
+2025-11-01 15:47:23,050: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 154, in view_professionals
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 39, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 15:47:26,164: Exception on /register [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 48, in register
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 39, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 15:47:35,142: Exception on /dashboard [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 131, in dashboard
+    rdvs = conn.execute('''
+sqlite3.OperationalError: no such column: s.heure
+2025-11-01 15:57:05,005: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 154, in view_professionals
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 39, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 16:04:48,265: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 156, in view_professionals
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 41, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-01 16:06:03,427: Exception on /register [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 50, in register
+    categories = get_categories()
+  File "/home/gkconsulting/prochenous2/app.py", line 41, in get_categories
+    categories = conn.execute('SELECT nom FROM categories WHERE actif = 1 ORDER BY ordre ASC').fetchall()
+sqlite3.OperationalError: no such table: categories
+2025-11-02 14:26:34,100: Exception on / [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 72, in index
+    return render_template('index.html')
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 129, in _render
+    app.update_template_context(context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 480, in update_template_context
+    context.update(self.ensure_sync(func)())
+  File "/home/gkconsulting/prochenous2/app.py", line 55, in inject_user_features
+    conversations = conn.execute('''
+sqlite3.OperationalError: no such column: sender_id
+2025-11-02 14:26:35,738: Exception on / [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 72, in index
+    return render_template('index.html')
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 129, in _render
+    app.update_template_context(context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 480, in update_template_context
+    context.update(self.ensure_sync(func)())
+  File "/home/gkconsulting/prochenous2/app.py", line 55, in inject_user_features
+    conversations = conn.execute('''
+sqlite3.OperationalError: no such column: sender_id
+2025-11-02 14:26:46,178: Exception on / [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 72, in index
+    return render_template('index.html')
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 129, in _render
+    app.update_template_context(context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 480, in update_template_context
+    context.update(self.ensure_sync(func)())
+  File "/home/gkconsulting/prochenous2/app.py", line 55, in inject_user_features
+    conversations = conn.execute('''
+sqlite3.OperationalError: no such column: sender_id
+2025-11-02 14:26:49,013: Exception on / [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 72, in index
+    return render_template('index.html')
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 129, in _render
+    app.update_template_context(context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 480, in update_template_context
+    context.update(self.ensure_sync(func)())
+  File "/home/gkconsulting/prochenous2/app.py", line 55, in inject_user_features
+    conversations = conn.execute('''
+sqlite3.OperationalError: no such column: sender_id
+2025-11-02 14:28:01,307: Exception on / [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 72, in index
+    return render_template('index.html')
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 129, in _render
+    app.update_template_context(context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 480, in update_template_context
+    context.update(self.ensure_sync(func)())
+  File "/home/gkconsulting/prochenous2/app.py", line 55, in inject_user_features
+    conversations = conn.execute('''
+sqlite3.OperationalError: no such column: sender_id
+2025-11-02 14:51:51,221: Exception on / [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 72, in index
+    return render_template('index.html')
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 129, in _render
+    app.update_template_context(context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 480, in update_template_context
+    context.update(self.ensure_sync(func)())
+  File "/home/gkconsulting/prochenous2/app.py", line 55, in inject_user_features
+    conversations = conn.execute('''
+sqlite3.OperationalError: no such column: sender_id
+2025-11-02 14:51:51,269: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 233, in view_professionals
+    return render_template('professionals.html', professionals=pros, categories=categories, user=user)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 129, in _render
+    app.update_template_context(context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 480, in update_template_context
+    context.update(self.ensure_sync(func)())
+  File "/home/gkconsulting/prochenous2/app.py", line 55, in inject_user_features
+    conversations = conn.execute('''
+sqlite3.OperationalError: no such column: sender_id
+2025-11-02 14:51:53,878: Exception on /professionals [GET]
+Traceback (most recent call last):
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/home/gkconsulting/prochenous2/app.py", line 233, in view_professionals
+    return render_template('professionals.html', professionals=pros, categories=categories, user=user)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/templating.py", line 129, in _render
+    app.update_template_context(context)
+  File "/home/gkconsulting/.local/lib/python3.10/site-packages/flask/app.py", line 480, in update_template_context
+    context.update(self.ensure_sync(func)())
+  File "/home/gkconsulting/prochenous2/app.py", line 55, in inject_user_features
+    conversations = conn.execute('''
+sqlite3.OperationalError: no such column: sender_id
