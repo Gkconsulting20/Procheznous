@@ -936,8 +936,8 @@ def valider_verification(pro_id):
     
     return redirect(url_for('profil', pro_id=pro_id))
 
-@app.route('/admin_verification')
-def admin_verification():
+@app.route('/admin/verifications')
+def admin_verifications():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
