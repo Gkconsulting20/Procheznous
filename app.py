@@ -191,10 +191,24 @@ def register():
                 return render_template('register.html', categories=categories)
         
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        conn.execute('INSERT INTO users (name, email, phone, password, role, localisation, pays, categorie) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                     (name, email if email else None, phone if phone else None, hashed_password, role, localisation, pays, categorie))
+        
+        # 🎁 OFFRE DE LANCEMENT : 1 mois Premium gratuit pour tous les nouveaux inscrits
+        from datetime import datetime, timedelta
+        now = datetime.now()
+        trial_end = now + timedelta(days=30)
+        
+        conn.execute('''
+            INSERT INTO users 
+            (name, email, phone, password, role, localisation, pays, categorie, 
+             plan, subscription_started_at, subscription_expires_at, subscription_status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'premium', ?, ?, 'trial')
+        ''', (name, email if email else None, phone if phone else None, hashed_password, 
+              role, localisation, pays, categorie,
+              now.strftime('%Y-%m-%d %H:%M:%S'),
+              trial_end.strftime('%Y-%m-%d %H:%M:%S')))
+        
         conn.commit()
-        flash('Inscription réussie! Vous pouvez maintenant vous connecter', 'success')
+        flash('🎉 Inscription réussie! Profitez de 1 mois Premium GRATUIT pour découvrir toutes les fonctionnalités! 🌟', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', categories=categories)
 

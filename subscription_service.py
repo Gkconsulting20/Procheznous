@@ -71,6 +71,7 @@ def check_subscription_status(user_id):
         
         result['expires_at'] = expiry_date.strftime('%Y-%m-%d')
         result['days_until_expiry'] = days_left
+        result['is_trial'] = user.get('subscription_status') == 'trial'  # Détection essai gratuit
         
         # Déterminer le statut
         if days_left < 0:
@@ -107,10 +108,17 @@ def check_subscription_status(user_id):
         
         # Mettre à jour le statut dans la DB si changé
         if user.get('subscription_status') != new_status:
-            conn.execute(
-                'UPDATE users SET subscription_status = ? WHERE id = ?',
-                (new_status, user_id)
-            )
+            # Si expiré, bloquer le premium automatiquement
+            if new_status == 'expired':
+                conn.execute(
+                    'UPDATE users SET plan = ?, subscription_status = ? WHERE id = ?',
+                    ('gratuit', new_status, user_id)
+                )
+            else:
+                conn.execute(
+                    'UPDATE users SET subscription_status = ? WHERE id = ?',
+                    (new_status, user_id)
+                )
             conn.commit()
         
         return result
@@ -137,12 +145,14 @@ def get_days_until_expiry(user_id):
 def get_warning_message(status_info):
     """
     Génère le message d'avertissement approprié
+    Adapté selon si c'est un essai gratuit ou un abonnement payant
     """
     if not status_info or not status_info['needs_warning']:
         return None
     
     days = status_info['days_until_expiry']
     level = status_info['warning_level']
+    is_trial = status_info.get('is_trial', False)
     
     # Préparer les textes dynamiques
     aujourdhui = "aujourd'hui"
@@ -150,28 +160,53 @@ def get_warning_message(status_info):
     expire_quand = aujourdhui if days == 0 else demain
     acces = "l'accès"
     
-    messages = {
-        'expired': {
-            'text': '⚠️ Votre abonnement Premium a expiré. Renouvelez maintenant pour continuer à profiter de toutes les fonctionnalités !',
-            'class': 'alert-danger',
-            'cta': 'Renouveler maintenant'
-        },
-        'urgent': {
-            'text': f'🔔 Attention ! Votre abonnement expire {expire_quand} ! Renouvelez dès maintenant.',
-            'class': 'alert-warning',
-            'cta': 'Renouveler'
-        },
-        'warning': {
-            'text': f'⏰ Votre abonnement Premium expire dans {days} jours. Renouvelez pour ne pas perdre {acces}.',
-            'class': 'alert-warning',
-            'cta': 'Renouveler'
-        },
-        'info': {
-            'text': f'💡 Votre abonnement Premium expire dans {days} jours.',
-            'class': 'alert-info',
-            'cta': 'Voir mon abonnement'
+    # Messages adaptés selon essai gratuit ou abonnement payant
+    if is_trial:
+        messages = {
+            'expired': {
+                'text': '🎁 Votre mois Premium gratuit est terminé ! Abonnez-vous maintenant à seulement 1000 FCFA/mois pour continuer à profiter de toutes les fonctionnalités ! 🌟',
+                'class': 'alert-danger',
+                'cta': 'S\'abonner maintenant (1000 FCFA/mois)'
+            },
+            'urgent': {
+                'text': f'🔔 Votre essai gratuit se termine {expire_quand} ! Ne perdez pas l\'accès aux fonctionnalités Premium, abonnez-vous maintenant !',
+                'class': 'alert-warning',
+                'cta': 'S\'abonner (1000 FCFA/mois)'
+            },
+            'warning': {
+                'text': f'⏰ Votre période d\'essai gratuit se termine dans {days} jours. Abonnez-vous à seulement 1000 FCFA/mois pour continuer !',
+                'class': 'alert-warning',
+                'cta': 'S\'abonner maintenant'
+            },
+            'info': {
+                'text': f'💡 Plus que {days} jours d\'essai Premium gratuit ! Profitez-en au maximum ! 🌟',
+                'class': 'alert-info',
+                'cta': 'Voir mon abonnement'
+            }
         }
-    }
+    else:
+        messages = {
+            'expired': {
+                'text': '⚠️ Votre abonnement Premium a expiré. Renouvelez maintenant pour continuer à profiter de toutes les fonctionnalités !',
+                'class': 'alert-danger',
+                'cta': 'Renouveler maintenant'
+            },
+            'urgent': {
+                'text': f'🔔 Attention ! Votre abonnement expire {expire_quand} ! Renouvelez dès maintenant.',
+                'class': 'alert-warning',
+                'cta': 'Renouveler'
+            },
+            'warning': {
+                'text': f'⏰ Votre abonnement Premium expire dans {days} jours. Renouvelez pour ne pas perdre {acces}.',
+                'class': 'alert-warning',
+                'cta': 'Renouveler'
+            },
+            'info': {
+                'text': f'💡 Votre abonnement Premium expire dans {days} jours.',
+                'class': 'alert-info',
+                'cta': 'Voir mon abonnement'
+            }
+        }
     
     return messages.get(level)
 
