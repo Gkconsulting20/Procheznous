@@ -64,6 +64,21 @@
             </div>
             
             <div class="mb-3">
+                <label for="localisation" class="form-label">Ville *</label>
+                <input class="form-control" type="text" name="localisation" id="localisation" placeholder="Ex: Lomé, Cotonou, Ouagadougou" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">📍 Géolocalisation</label>
+                <button type="button" class="btn btn-outline-primary w-100" id="getLocationBtn" onclick="getLocation()">
+                    <span id="locationBtnText">📍 Utiliser ma position actuelle</span>
+                </button>
+                <div id="locationStatus" class="form-text text-muted mt-2"></div>
+                <input type="hidden" name="latitude" id="latitude">
+                <input type="hidden" name="longitude" id="longitude">
+            </div>
+            
+            <div class="mb-3">
                 <label for="role" class="form-label">Vous êtes *</label>
                 <select class="form-control" name="role" id="role" required>
                     <option value="">Choisir un rôle</option>
@@ -73,10 +88,6 @@
             </div>
             
             <div id="proFields" style="display:none;">
-                <div class="mb-3">
-                    <label for="localisation" class="form-label">Localisation *</label>
-                    <input class="form-control" type="text" name="localisation" id="localisation" placeholder="Ex: Lomé, Cotonou, Ouagadougou">
-                </div>
                 <div class="mb-3">
                     <label for="categorie" class="form-label">Votre métier *</label>
                     <select class="form-control" name="categorie" id="categorie">
@@ -134,5 +145,61 @@ phoneRadio.addEventListener('change', toggleIdentificationMethod);
 
 // Initialiser
 toggleIdentificationMethod();
+
+// Géolocalisation HTML5
+function getLocation() {
+    const btn = document.getElementById('getLocationBtn');
+    const btnText = document.getElementById('locationBtnText');
+    const status = document.getElementById('locationStatus');
+    
+    if (!navigator.geolocation) {
+        status.innerHTML = '<span class="text-danger">❌ Votre navigateur ne supporte pas la géolocalisation</span>';
+        return;
+    }
+    
+    btnText.textContent = '⏳ Localisation en cours...';
+    btn.disabled = true;
+    
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+            
+            btnText.textContent = '✅ Position enregistrée';
+            status.innerHTML = `<span class="text-success">✅ Position enregistrée : ${lat.toFixed(6)}, ${lng.toFixed(6)}</span>`;
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-success');
+            btn.disabled = false;
+        },
+        function(error) {
+            let errorMsg = '';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg = '❌ Vous avez refusé l\'accès à votre position. Veuillez autoriser l\'accès dans les paramètres de votre navigateur.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg = '❌ Position indisponible. Vérifiez votre connexion GPS.';
+                    break;
+                case error.TIMEOUT:
+                    errorMsg = '❌ La demande de localisation a expiré. Réessayez.';
+                    break;
+                default:
+                    errorMsg = '❌ Erreur inconnue lors de la géolocalisation.';
+            }
+            
+            status.innerHTML = `<span class="text-danger">${errorMsg}</span>`;
+            btnText.textContent = '📍 Réessayer';
+            btn.disabled = false;
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
 </script>
 {% endblock %}

@@ -162,7 +162,13 @@ def register():
         pays = request.form.get('pays', 'Togo').strip()
         categorie = request.form.get('categorie', '').strip() if role == 'pro' else None
         
-        if not name or not password or not role:
+        latitude = request.form.get('latitude', '').strip()
+        longitude = request.form.get('longitude', '').strip()
+        
+        latitude = float(latitude) if latitude else None
+        longitude = float(longitude) if longitude else None
+        
+        if not name or not password or not role or not localisation:
             flash('Tous les champs obligatoires doivent être remplis', 'error')
             return render_template('register.html', categories=categories)
         
@@ -200,10 +206,12 @@ def register():
         conn.execute('''
             INSERT INTO users 
             (name, email, phone, password, role, localisation, pays, categorie, 
+             latitude, longitude,
              plan, subscription_started_at, subscription_expires_at, subscription_status) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'premium', ?, ?, 'trial')
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'premium', ?, ?, 'trial')
         ''', (name, email if email else None, phone if phone else None, hashed_password, 
               role, localisation, pays, categorie,
+              latitude, longitude,
               now.strftime('%Y-%m-%d %H:%M:%S'),
               trial_end.strftime('%Y-%m-%d %H:%M:%S')))
         
