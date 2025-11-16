@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}Mes Paramètres{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h3 class="mb-4">⚙️ Mes Paramètres</h3>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">📋 Informations personnelles</h5>
+                <form method="post" id="settingsForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nom / Pseudo *</label>
+                        <input class="form-control" type="text" name="name" id="name" value="{{ user.name }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input class="form-control" type="text" value="{{ user.email if user.email else 'Non renseigné' }}" disabled>
+                        <div class="form-text">Pour modifier votre email, contactez l'assistance</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Téléphone</label>
+                        <input class="form-control" type="text" value="{{ user.phone if user.phone else 'Non renseigné' }}" disabled>
+                        <div class="form-text">Pour modifier votre téléphone, contactez l'assistance</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="pays" class="form-label">Pays *</label>
+                        <select class="form-control" name="pays" id="pays" required>
+                            <option value="Togo" {% if user.pays == 'Togo' %}selected{% endif %}>🇹🇬 Togo</option>
+                            <option value="Bénin" {% if user.pays == 'Bénin' %}selected{% endif %}>🇧🇯 Bénin</option>
+                            <option value="Burkina Faso" {% if user.pays == 'Burkina Faso' %}selected{% endif %}>🇧🇫 Burkina Faso</option>
+                            <option value="Côte d'Ivoire" {% if user.pays == "Côte d'Ivoire" %}selected{% endif %}>🇨🇮 Côte d'Ivoire</option>
+                            <option value="Mali" {% if user.pays == 'Mali' %}selected{% endif %}>🇲🇱 Mali</option>
+                            <option value="Niger" {% if user.pays == 'Niger' %}selected{% endif %}>🇳🇪 Niger</option>
+                            <option value="Sénégal" {% if user.pays == 'Sénégal' %}selected{% endif %}>🇸🇳 Sénégal</option>
+                            <option value="Ghana" {% if user.pays == 'Ghana' %}selected{% endif %}>🇬🇭 Ghana</option>
+                            <option value="Guinée" {% if user.pays == 'Guinée' %}selected{% endif %}>🇬🇳 Guinée</option>
+                            <option value="Autre" {% if user.pays == 'Autre' %}selected{% endif %}>🌍 Autre</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="localisation" class="form-label">Ville *</label>
+                        <input class="form-control" type="text" name="localisation" id="localisation" 
+                               value="{{ user.localisation if user.localisation else '' }}" 
+                               placeholder="Ex: Lomé, Cotonou, Ouagadougou" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">📍 Géolocalisation</label>
+                        {% if user.latitude and user.longitude %}
+                        <div class="alert alert-success">
+                            ✅ Position enregistrée : {{ "%.6f"|format(user.latitude) }}, {{ "%.6f"|format(user.longitude) }}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            ⚠️ Position non enregistrée. Cliquez ci-dessous pour améliorer votre visibilité !
+                        </div>
+                        {% endif %}
+                        
+                        <button type="button" class="btn btn-outline-primary w-100" id="getLocationBtn" onclick="getLocation()">
+                            <span id="locationBtnText">📍 {% if user.latitude %}Mettre à jour{% else %}Utiliser{% endif %} ma position actuelle</span>
+                        </button>
+                        <div id="locationStatus" class="form-text text-muted mt-2"></div>
+                        <input type="hidden" name="latitude" id="latitude" value="{{ user.latitude if user.latitude else '' }}">
+                        <input type="hidden" name="longitude" id="longitude" value="{{ user.longitude if user.longitude else '' }}">
+                    </div>
+                    
+                    {% if user.role == 'pro' %}
+                    <div class="mb-3">
+                        <label for="categorie" class="form-label">Métier *</label>
+                        <select class="form-control" name="categorie" id="categorie" required>
+                            {% for cat in categories %}
+                            <option value="{{ cat }}" {% if user.categorie == cat %}selected{% endif %}>{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    
+                    <button class="btn btn-success w-100" type="submit">💾 Enregistrer les modifications</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">🔒 Modifier mon mot de passe</h5>
+                <form method="post" action="{{ url_for('change_password') }}">
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Mot de passe actuel *</label>
+                        <input class="form-control" type="password" name="current_password" id="current_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">Nouveau mot de passe *</label>
+                        <input class="form-control" type="password" name="new_password" id="new_password" 
+                               placeholder="Minimum 6 caractères" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirmer le nouveau mot de passe *</label>
+                        <input class="form-control" type="password" name="confirm_password" id="confirm_password" required>
+                    </div>
+                    <button class="btn btn-warning w-100" type="submit">🔑 Changer le mot de passe</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">← Retour au tableau de bord</a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Géolocalisation HTML5
+function getLocation() {
+    const btn = document.getElementById('getLocationBtn');
+    const btnText = document.getElementById('locationBtnText');
+    const status = document.getElementById('locationStatus');
+    
+    if (!navigator.geolocation) {
+        status.innerHTML = '<span class="text-danger">❌ Votre navigateur ne supporte pas la géolocalisation</span>';
+        return;
+    }
+    
+    btnText.textContent = '⏳ Localisation en cours...';
+    btn.disabled = true;
+    
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+            
+            btnText.textContent = '✅ Position enregistrée';
+            status.innerHTML = `<span class="text-success">✅ Position enregistrée : ${lat.toFixed(6)}, ${lng.toFixed(6)}</span>`;
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-success');
+            btn.disabled = false;
+        },
+        function(error) {
+            let errorMsg = '';
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg = '❌ Vous avez refusé l\'accès à votre position. Veuillez autoriser l\'accès dans les paramètres de votre navigateur.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg = '❌ Position indisponible. Vérifiez votre connexion GPS.';
+                    break;
+                case error.TIMEOUT:
+                    errorMsg = '❌ La demande de localisation a expiré. Réessayez.';
+                    break;
+                default:
+                    errorMsg = '❌ Erreur inconnue lors de la géolocalisation.';
+            }
+            
+            status.innerHTML = `<span class="text-danger">${errorMsg}</span>`;
+            btnText.textContent = '📍 Réessayer';
+            btn.disabled = false;
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
+</script>
+{% endblock %}

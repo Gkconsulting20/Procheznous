@@ -101,6 +101,37 @@ def update_subscription_status():
         # En cas d'erreur, ne pas crasher la requête
         pass
 
+def mask_sensitive_data(data, data_type='email'):
+    """
+    Masque les données sensibles (email ou téléphone)
+    
+    Exemples:
+    - email: "user@example.com" → "u***@example.com"
+    - phone: "+22890123456" → "+228***456"
+    """
+    if not data:
+        return "Non renseigné"
+    
+    if data_type == 'email':
+        if '@' in data:
+            parts = data.split('@')
+            username = parts[0]
+            domain = parts[1]
+            if len(username) <= 2:
+                masked_username = username[0] + '***'
+            else:
+                masked_username = username[0] + '***'
+            return f"{masked_username}@{domain}"
+        return data
+    
+    elif data_type == 'phone':
+        # Pour les numéros type +22890123456
+        if len(data) > 6:
+            return data[:5] + '***' + data[-3:]
+        return '***' + data[-3:]
+    
+    return data
+
 @app.context_processor
 def inject_user_features():
     """Injecte les informations sur les fonctionnalités disponibles pour l'utilisateur"""
@@ -143,7 +174,7 @@ def inject_user_features():
         except:
             pass
     
-    return dict(has_messages=has_messages, has_devis=has_devis)
+    return dict(has_messages=has_messages, has_devis=has_devis, mask_sensitive_data=mask_sensitive_data)
 
 @app.route('/')
 def index():
@@ -879,6 +910,80 @@ def creer_devis():
     
     clients = conn.execute('SELECT id, name, email, phone, plan FROM users WHERE role = "user" ORDER BY name').fetchall()
     return render_template('creer_devis.html', clients=clients, user_plan=user_plan['plan'] if user_plan else 'gratuit')
+
+@app.route('/parametres', methods=['GET', 'POST'])
+def parametres():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        pays = request.form.get('pays', 'Togo').strip()
+        localisation = request.form.get('localisation', '').strip()
+        latitude = request.form.get('latitude', '').strip()
+        longitude = request.form.get('longitude', '').strip()
+        categorie = request.form.get('categorie', '').strip() if session.get('role') == 'pro' else None
+        
+        if not name or not localisation:
+            flash('Le nom et la ville sont obligatoires', 'error')
+            user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+            categories = get_categories()
+            return render_template('parametres.html', user=user, categories=categories)
+        
+        latitude = float(latitude) if latitude else None
+        longitude = float(longitude) if longitude else None
+        
+        conn.execute('''
+            UPDATE users 
+            SET name = ?, pays = ?, localisation = ?, latitude = ?, longitude = ?, categorie = ?
+            WHERE id = ?
+        ''', (name, pays, localisation, latitude, longitude, categorie, session['user_id']))
+        
+        conn.commit()
+        flash('✅ Vos informations ont été mises à jour avec succès!', 'success')
+        return redirect(url_for('parametres'))
+    
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    categories = get_categories()
+    return render_template('parametres.html', user=user, categories=categories)
+
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    current_password = request.form.get('current_password', '').strip()
+    new_password = request.form.get('new_password', '').strip()
+    confirm_password = request.form.get('confirm_password', '').strip()
+    
+    if not current_password or not new_password or not confirm_password:
+        flash('Tous les champs sont obligatoires', 'error')
+        return redirect(url_for('parametres'))
+    
+    if new_password != confirm_password:
+        flash('Les nouveaux mots de passe ne correspondent pas', 'error')
+        return redirect(url_for('parametres'))
+    
+    if len(new_password) < 6:
+        flash('Le mot de passe doit contenir au moins 6 caractères', 'error')
+        return redirect(url_for('parametres'))
+    
+    conn = get_db()
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    
+    if not bcrypt.checkpw(current_password.encode('utf-8'), 
+                         user['password'].encode('utf-8') if isinstance(user['password'], str) else user['password']):
+        flash('Mot de passe actuel incorrect', 'error')
+        return redirect(url_for('parametres'))
+    
+    new_hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+    conn.execute('UPDATE users SET password = ? WHERE id = ?', (new_hashed, session['user_id']))
+    conn.commit()
+    
+    flash('🔑 Mot de passe modifié avec succès!', 'success')
+    return redirect(url_for('parametres'))
 
 @app.route('/logout')
 def logout():
