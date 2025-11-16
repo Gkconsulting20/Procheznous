@@ -29,17 +29,49 @@
                     <div class="mb-3">
                         <label for="pays" class="form-label">Pays *</label>
                         <select class="form-control" name="pays" id="pays" required>
-                            <option value="Togo" {% if user.pays == 'Togo' %}selected{% endif %}>🇹🇬 Togo</option>
-                            <option value="Bénin" {% if user.pays == 'Bénin' %}selected{% endif %}>🇧🇯 Bénin</option>
-                            <option value="Burkina Faso" {% if user.pays == 'Burkina Faso' %}selected{% endif %}>🇧🇫 Burkina Faso</option>
-                            <option value="Côte d'Ivoire" {% if user.pays == "Côte d'Ivoire" %}selected{% endif %}>🇨🇮 Côte d'Ivoire</option>
-                            <option value="Mali" {% if user.pays == 'Mali' %}selected{% endif %}>🇲🇱 Mali</option>
-                            <option value="Niger" {% if user.pays == 'Niger' %}selected{% endif %}>🇳🇪 Niger</option>
-                            <option value="Sénégal" {% if user.pays == 'Sénégal' %}selected{% endif %}>🇸🇳 Sénégal</option>
-                            <option value="Ghana" {% if user.pays == 'Ghana' %}selected{% endif %}>🇬🇭 Ghana</option>
-                            <option value="Guinée" {% if user.pays == 'Guinée' %}selected{% endif %}>🇬🇳 Guinée</option>
-                            <option value="Autre" {% if user.pays == 'Autre' %}selected{% endif %}>🌍 Autre</option>
+                            <!-- AFRIQUE DE L'OUEST (Marché principal) -->
+                            <optgroup label="🌍 Afrique de l'Ouest">
+                                <option value="Togo" {% if user.pays == 'Togo' %}selected{% endif %}>🇹🇬 Togo</option>
+                                <option value="Bénin" {% if user.pays == 'Bénin' %}selected{% endif %}>🇧🇯 Bénin</option>
+                                <option value="Burkina Faso" {% if user.pays == 'Burkina Faso' %}selected{% endif %}>🇧🇫 Burkina Faso</option>
+                                <option value="Côte d'Ivoire" {% if user.pays == "Côte d'Ivoire" %}selected{% endif %}>🇨🇮 Côte d'Ivoire</option>
+                                <option value="Ghana" {% if user.pays == 'Ghana' %}selected{% endif %}>🇬🇭 Ghana</option>
+                                <option value="Guinée" {% if user.pays == 'Guinée' %}selected{% endif %}>🇬🇳 Guinée</option>
+                                <option value="Mali" {% if user.pays == 'Mali' %}selected{% endif %}>🇲🇱 Mali</option>
+                                <option value="Niger" {% if user.pays == 'Niger' %}selected{% endif %}>🇳🇪 Niger</option>
+                                <option value="Nigeria" {% if user.pays == 'Nigeria' %}selected{% endif %}>🇳🇬 Nigeria</option>
+                                <option value="Sénégal" {% if user.pays == 'Sénégal' %}selected{% endif %}>🇸🇳 Sénégal</option>
+                            </optgroup>
+                            <!-- PAYS LES PLUS COURANTS -->
+                            <optgroup label="🌎 Autres pays">
+                                <option value="Afrique du Sud" {% if user.pays == 'Afrique du Sud' %}selected{% endif %}>🇿🇦 Afrique du Sud</option>
+                                <option value="Algérie" {% if user.pays == 'Algérie' %}selected{% endif %}>🇩🇿 Algérie</option>
+                                <option value="Allemagne" {% if user.pays == 'Allemagne' %}selected{% endif %}>🇩🇪 Allemagne</option>
+                                <option value="Belgique" {% if user.pays == 'Belgique' %}selected{% endif %}>🇧🇪 Belgique</option>
+                                <option value="Brésil" {% if user.pays == 'Brésil' %}selected{% endif %}>🇧🇷 Brésil</option>
+                                <option value="Cameroun" {% if user.pays == 'Cameroun' %}selected{% endif %}>🇨🇲 Cameroun</option>
+                                <option value="Canada" {% if user.pays == 'Canada' %}selected{% endif %}>🇨🇦 Canada</option>
+                                <option value="Chine" {% if user.pays == 'Chine' %}selected{% endif %}>🇨🇳 Chine</option>
+                                <option value="Congo" {% if user.pays == 'Congo' %}selected{% endif %}>🇨🇬 Congo</option>
+                                <option value="Égypte" {% if user.pays == 'Égypte' %}selected{% endif %}>🇪🇬 Égypte</option>
+                                <option value="Espagne" {% if user.pays == 'Espagne' %}selected{% endif %}>🇪🇸 Espagne</option>
+                                <option value="États-Unis" {% if user.pays == 'États-Unis' %}selected{% endif %}>🇺🇸 États-Unis</option>
+                                <option value="France" {% if user.pays == 'France' %}selected{% endif %}>🇫🇷 France</option>
+                                <option value="Gabon" {% if user.pays == 'Gabon' %}selected{% endif %}>🇬🇦 Gabon</option>
+                                <option value="Inde" {% if user.pays == 'Inde' %}selected{% endif %}>🇮🇳 Inde</option>
+                                <option value="Italie" {% if user.pays == 'Italie' %}selected{% endif %}>🇮🇹 Italie</option>
+                                <option value="Japon" {% if user.pays == 'Japon' %}selected{% endif %}>🇯🇵 Japon</option>
+                                <option value="Kenya" {% if user.pays == 'Kenya' %}selected{% endif %}>🇰🇪 Kenya</option>
+                                <option value="Madagascar" {% if user.pays == 'Madagascar' %}selected{% endif %}>🇲🇬 Madagascar</option>
+                                <option value="Maroc" {% if user.pays == 'Maroc' %}selected{% endif %}>🇲🇦 Maroc</option>
+                                <option value="Mexique" {% if user.pays == 'Mexique' %}selected{% endif %}>🇲🇽 Mexique</option>
+                                <option value="Royaume-Uni" {% if user.pays == 'Royaume-Uni' %}selected{% endif %}>🇬🇧 Royaume-Uni</option>
+                                <option value="Russie" {% if user.pays == 'Russie' %}selected{% endif %}>🇷🇺 Russie</option>
+                                <option value="Suisse" {% if user.pays == 'Suisse' %}selected{% endif %}>🇨🇭 Suisse</option>
+                                <option value="Tunisie" {% if user.pays == 'Tunisie' %}selected{% endif %}>🇹🇳 Tunisie</option>
+                            </optgroup>
                         </select>
+                        <div class="form-text">💡 Si votre pays n'est pas dans la liste, saisissez-le manuellement après l'enregistrement</div>
                     </div>
                     
                     <div class="mb-3">
