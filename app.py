@@ -536,11 +536,11 @@ def profil(pro_id):
         flash('Professionnel introuvable', 'error')
         return redirect(url_for('view_professionals'))
     
-    profil_enrichi = conn.execute('SELECT * FROM profils_pro WHERE pro_id = ?', (pro_id,)).fetchone()
+    profil_enrichi = conn.execute('SELECT * FROM profils_pro WHERE user_id = ?', (pro_id,)).fetchone()
     avis = conn.execute('''
         SELECT a.*, u.name as client_name FROM avis a
         JOIN users u ON a.client_id = u.id
-        WHERE a.pro_id = ? ORDER BY a.date DESC
+        WHERE a.pro_id = ? ORDER BY a.date_creation DESC
     ''', (pro_id,)).fetchall()
     
     note_moyenne = conn.execute('SELECT AVG(note) as moyenne FROM avis WHERE pro_id = ?', (pro_id,)).fetchone()
