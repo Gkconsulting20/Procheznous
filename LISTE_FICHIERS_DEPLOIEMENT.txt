@@ -1,0 +1,110 @@
+============================================================
+  LISTE DES FICHIERS À DÉPLOYER SUR PYTHONANYWHERE
+  Système Commercial - PRO CHEZ NOUS
+============================================================
+
+📦 FICHIERS MODIFIÉS (REMPLACER LES EXISTANTS)
+------------------------------------------------------------
+1. app.py
+   → Fichier principal avec routes commerciales
+   → Contient: /dashboard_commercial, /admin/commerciaux
+   → Migrations DB dans init_db()
+
+2. templates/base.html
+   → Menu admin mis à jour
+   → Ajout du lien "Commerciaux" dans le menu Admin
+
+3. templates/register.html
+   → Capture du code de parrainage (ref parameter)
+   → Champ caché pour conserver le code
+
+4. replit.md
+   → Documentation mise à jour
+   → Section "Système Commercial" ajoutée
+
+============================================================
+✨ NOUVEAUX FICHIERS (À CRÉER)
+------------------------------------------------------------
+5. create_commercial.py
+   → Script de création de comptes commerciaux
+   → Génération automatique de codes uniques
+   → Utilisation: python3 create_commercial.py
+
+6. templates/dashboard_commercial.html
+   → Dashboard pour les commerciaux
+   → Affichage des statistiques (inscrits, conversions, revenus)
+   → Affichage du lien de parrainage
+
+7. templates/admin_commerciaux.html
+   → Panel admin pour voir tous les commerciaux
+   → Statistiques globales
+   → Performance de chaque commercial
+
+============================================================
+💾 BASE DE DONNÉES
+------------------------------------------------------------
+Nouvelles colonnes dans la table "users":
+
+• commercial_id (INTEGER)
+  → ID du commercial qui a parrainé cet utilisateur
+  → NULL si pas de parrainage
+
+• code_commercial (TEXT)
+  → Code unique de parrainage (8 caractères)
+  → Seulement pour les utilisateurs avec role='commercial'
+  → Index unique créé automatiquement
+
+Migration automatique via init_db() dans app.py
+
+============================================================
+🔧 COMMANDES PYTHONANYWHERE
+------------------------------------------------------------
+
+1. Migration DB (dans Bash console):
+   cd prochenous2
+   python3 -c "from app import init_db; init_db()"
+
+2. Créer un commercial:
+   cd prochenous2
+   python3 create_commercial.py
+
+3. Redémarrer l'app:
+   Web tab → Reload button
+
+============================================================
+✅ CHECKLIST DÉPLOIEMENT
+------------------------------------------------------------
+☐ Upload app.py
+☐ Upload templates/base.html
+☐ Upload templates/register.html
+☐ Upload replit.md
+☐ Créer create_commercial.py
+☐ Créer templates/dashboard_commercial.html
+☐ Créer templates/admin_commerciaux.html
+☐ Exécuter migration DB (init_db)
+☐ Reload l'application
+☐ Créer commercial de test
+☐ Tester connexion commercial
+☐ Tester lien de parrainage
+☐ Tester panel admin
+
+============================================================
+📝 NOTES IMPORTANTES
+------------------------------------------------------------
+• Les migrations se font automatiquement dans init_db()
+• Les codes commerciaux sont générés automatiquement (8 caractères)
+• Les codes sont normalisés en MAJUSCULES (.upper())
+• Les liens fonctionnent en minuscules ou majuscules
+• Un compte = UN seul rôle (client OU pro OU commercial)
+• Les commerciaux ont Premium gratuit à vie
+
+============================================================
+🆘 DÉPANNAGE
+------------------------------------------------------------
+Erreur 500          → Vérifier Error logs dans Web tab
+Database error      → Relancer init_db()
+Page blanche        → Vérifier templates uploadés
+404 Not Found       → Reload l'application
+Code non reconnu    → Vérifier index unique créé
+
+============================================================

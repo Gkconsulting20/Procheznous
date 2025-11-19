@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Déploiement Commercial - PythonAnywhere</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .checklist-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            border-radius: 4px;
+        }
+        .checklist-item.done {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .file-list {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .command {
+            background: #212529;
+            color: #28a745;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        h2 {
+            color: #dc3545;
+            border-bottom: 2px solid #dc3545;
+            padding-bottom: 10px;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 DÉPLOIEMENT SYSTÈME COMMERCIAL</h1>
+        <p>PythonAnywhere - PRO CHEZ NOUS</p>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">1</span>Fichiers à Transférer</h2>
+        
+        <h3>📝 Fichiers Modifiés (Remplacer)</h3>
+        <div class="file-list">
+✓ app.py<br>
+✓ templates/base.html<br>
+✓ templates/register.html<br>
+✓ replit.md
+        </div>
+
+        <h3>✨ Nouveaux Fichiers (Créer)</h3>
+        <div class="file-list">
+✓ create_commercial.py<br>
+✓ templates/dashboard_commercial.html<br>
+✓ templates/admin_commerciaux.html
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">2</span>Connexion PythonAnywhere</h2>
+        <div class="checklist-item">
+            <strong>🌐 URL:</strong> <code>https://www.pythonanywhere.com</code><br>
+            <strong>📁 Dossier:</strong> <code>/home/gkconsulting/prochenous2/</code>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">3</span>Upload des Fichiers</h2>
+        
+        <div class="checklist-item">
+            <strong>A. app.py</strong><br>
+            1. Ouvrez le fichier existant<br>
+            2. Sélectionnez tout (Ctrl+A)<br>
+            3. Remplacez par le nouveau contenu<br>
+            4. Save
+        </div>
+
+        <div class="checklist-item">
+            <strong>B. templates/base.html</strong><br>
+            1. Ouvrez templates/base.html<br>
+            2. Remplacez le contenu<br>
+            3. Save
+        </div>
+
+        <div class="checklist-item">
+            <strong>C. templates/register.html</strong><br>
+            1. Ouvrez templates/register.html<br>
+            2. Remplacez le contenu<br>
+            3. Save
+        </div>
+
+        <div class="checklist-item">
+            <strong>D. create_commercial.py</strong><br>
+            1. Cliquez sur "New file"<br>
+            2. Nom: create_commercial.py<br>
+            3. Collez le contenu<br>
+            4. Save
+        </div>
+
+        <div class="checklist-item">
+            <strong>E. templates/dashboard_commercial.html</strong><br>
+            1. Dans templates/, "New file"<br>
+            2. Nom: dashboard_commercial.html<br>
+            3. Collez le contenu<br>
+            4. Save
+        </div>
+
+        <div class="checklist-item">
+            <strong>F. templates/admin_commerciaux.html</strong><br>
+            1. Dans templates/, "New file"<br>
+            2. Nom: admin_commerciaux.html<br>
+            3. Collez le contenu<br>
+            4. Save
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">4</span>Migration Base de Données</h2>
+        
+        <div class="warning">
+            ⚠️ <strong>Important:</strong> Cette étape ajoute 2 colonnes à la table users
+        </div>
+
+        <div class="checklist-item">
+            <strong>Ouvrir Bash Console</strong><br>
+            1. Cliquez sur "Consoles" dans le menu<br>
+            2. "Bash" → "New console"
+        </div>
+
+        <div class="command">
+$ cd prochenous2<br>
+$ python3 -c "from app import init_db; init_db()"
+        </div>
+
+        <div class="success">
+            ✅ Résultat attendu: Migration réussie (pas d'erreur)
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">5</span>Redémarrer l'Application</h2>
+        
+        <div class="checklist-item">
+            1. Allez dans l'onglet <strong>"Web"</strong><br>
+            2. Trouvez: <code>www.pro-chez-nous.com</code><br>
+            3. Cliquez sur le gros bouton vert <strong>"Reload"</strong><br>
+            4. Attendez 10-15 secondes
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">6</span>Créer un Commercial de Test</h2>
+        
+        <div class="checklist-item">
+            <strong>Dans le Bash Console:</strong>
+        </div>
+
+        <div class="command">
+$ cd prochenous2<br>
+$ python3 create_commercial.py
+        </div>
+
+        <div class="checklist-item">
+            <strong>Saisir:</strong><br>
+            • Nom: Marie KOUASSI<br>
+            • Email: commercial@pro-chez-nous.com<br>
+            • Téléphone: +22890123456<br>
+            • Password: Commercial2024!<br>
+            <br>
+            <strong>📝 Notez le code généré (ex: ABC12345)</strong>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2><span class="step-number">7</span>Tests de Vérification</h2>
+        
+        <div class="checklist-item">
+            <strong>✓ Test 1: Connexion Commercial</strong><br>
+            1. <code>www.pro-chez-nous.com/login</code><br>
+            2. Email: commercial@pro-chez-nous.com<br>
+            3. Password: Commercial2024!<br>
+            4. → Dashboard commercial doit s'afficher
+        </div>
+
+        <div class="checklist-item">
+            <strong>✓ Test 2: Lien de Parrainage</strong><br>
+            1. Copiez: <code>www.pro-chez-nous.com/register?ref=ABC12345</code><br>
+            2. Navigation privée<br>
+            3. Inscrivez un utilisateur test<br>
+            4. Reconnectez au dashboard commercial<br>
+            5. → Stats doivent montrer +1 inscrit
+        </div>
+
+        <div class="checklist-item">
+            <strong>✓ Test 3: Panel Admin</strong><br>
+            1. Connexion admin<br>
+            2. Menu Admin → Commerciaux<br>
+            3. → Liste des commerciaux visible
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>✅ Checklist Finale</h2>
+        
+        <div class="checklist-item">
+            ☐ Tous les fichiers uploadés<br>
+            ☐ Migration de la base de données appliquée<br>
+            ☐ Application redémarrée (Reload)<br>
+            ☐ Commercial de test créé<br>
+            ☐ Connexion commercial fonctionne<br>
+            ☐ Dashboard commercial s'affiche<br>
+            ☐ Lien de parrainage fonctionne<br>
+            ☐ Statistiques se calculent<br>
+            ☐ Panel admin/commerciaux accessible
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🆘 Dépannage</h2>
+        
+        <div class="warning">
+            <strong>Erreur 500:</strong> Vérifiez les logs dans l'onglet "Web" → "Error log"
+        </div>
+
+        <div class="warning">
+            <strong>Database error:</strong> Relancez <code>init_db()</code> dans la console
+        </div>
+
+        <div class="warning">
+            <strong>Page blanche:</strong> Vérifiez que tous les templates sont uploadés
+        </div>
+
+        <div class="warning">
+            <strong>404 Not Found:</strong> Reload l'application et attendez 15 secondes
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📞 Support</h2>
+        <p>Si problème persistant:</p>
+        <ol>
+            <li>Vérifiez les Error logs (onglet Web)</li>
+            <li>Vérifiez que la DB a les nouvelles colonnes: <code>PRAGMA table_info(users)</code></li>
+            <li>Assurez-vous que tous les fichiers sont bien uploadés</li>
+        </ol>
+    </div>
+
+    <div class="success" style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+        <strong>🎉 DÉPLOIEMENT RÉUSSI !</strong><br>
+        Le système commercial est maintenant opérationnel sur PythonAnywhere
+    </div>
+</body>
+</html>
