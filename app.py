@@ -1690,6 +1690,71 @@ def admin_toggle_user_status(id):
     flash(f'Utilisateur "{user["name"]}" {action} avec succès!', 'success')
     return redirect(url_for('admin_users'))
 
+@app.route('/admin/commerciaux')
+def admin_commerciaux():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    conn = get_db()
+    
+    # Récupérer tous les commerciaux avec leurs statistiques
+    commerciaux = conn.execute('''
+        SELECT id, name, email, phone, code_commercial, statut_compte
+        FROM users
+        WHERE role = 'commercial'
+        ORDER BY id DESC
+    ''').fetchall()
+    
+    # Calculer les stats pour chaque commercial
+    commerciaux_stats = []
+    for commercial in commerciaux:
+        # Total inscrits
+        total = conn.execute('''
+            SELECT COUNT(*) as count FROM users 
+            WHERE commercial_id = ? AND role != 'commercial'
+        ''', (commercial['id'],)).fetchone()
+        
+        # Clients
+        clients = conn.execute('''
+            SELECT COUNT(*) as count FROM users 
+            WHERE commercial_id = ? AND role = 'user'
+        ''', (commercial['id'],)).fetchone()
+        
+        # Pros
+        pros = conn.execute('''
+            SELECT COUNT(*) as count FROM users 
+            WHERE commercial_id = ? AND role = 'pro'
+        ''', (commercial['id'],)).fetchone()
+        
+        # Premium payants (pas en trial)
+        premium = conn.execute('''
+            SELECT COUNT(*) as count FROM users 
+            WHERE commercial_id = ? AND plan = 'premium' AND subscription_status = 'active'
+        ''', (commercial['id'],)).fetchone()
+        
+        total_count = total['count'] if total else 0
+        premium_count = premium['count'] if premium else 0
+        taux_conversion = round((premium_count / total_count * 100), 1) if total_count > 0 else 0
+        revenus = premium_count * 1000
+        
+        commerciaux_stats.append({
+            'id': commercial['id'],
+            'name': commercial['name'],
+            'email': commercial['email'],
+            'phone': commercial['phone'],
+            'code': commercial['code_commercial'],
+            'statut': commercial['statut_compte'],
+            'total_inscrits': total_count,
+            'clients': clients['count'] if clients else 0,
+            'pros': pros['count'] if pros else 0,
+            'premium': premium_count,
+            'taux_conversion': taux_conversion,
+            'revenus': revenus
+        })
+    
+    return render_template('admin_commerciaux.html', commerciaux=commerciaux_stats)
+
 def init_db():
     conn = get_db()
     conn.executescript('''
