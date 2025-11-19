@@ -140,13 +140,19 @@ The platform features a **dynamic category management system**. Administrators c
 - **Files**: `utils.py`
 
 ### FedaPay Payment Integration
-- **Status**: ⚠️ Temporairement désactivé (en attente de configuration)
+- **Status**: ✅ Configuré (clés API ajoutées - novembre 2025)
 - **Purpose**: Accept Premium subscription payments (1000 FCFA/month - prix de lancement)
-- **Payment Methods**: T-Money, Flooz, MTN, Orange Money, cards
+- **Payment Methods**: T-Money, Flooz, MTN Mobile Money, Orange Money, cards
 - **Mode**: Sandbox (test) and Live (production) support
-- **Files**: `fedapay_service.py`, `templates/upgrade_premium.html`, `templates/payment_redirect.html`
+- **Files**: `fedapay_service.py`, `templates/upgrade_premium.html`, `templates/payment_redirect.html`, `templates/admin_fedapay_test.html`
 - **Configuration**: Set `FEDAPAY_SECRET_KEY`, `FEDAPAY_PUBLIC_KEY`, `FEDAPAY_ENV` in environment
-- **Sécurité**: Mode démo désactivé - Aucun paiement ne peut être effectué sans configuration FedaPay complète
+- **Admin Panel**: Page de diagnostic et test disponible à `/admin/fedapay` (menu Admin → FedaPay)
+- **Features**:
+  - Test de connexion API avec détection d'erreurs
+  - Affichage configuration actuelle (environnement, clés, URLs)
+  - Guide intégré pour configuration FedaPay
+  - Solutions aux erreurs communes (authentification, clés invalides)
+- **Sécurité**: Clés stockées dans Replit Secrets, jamais affichées en clair
 
 ### SendGrid Email Integration
 - **Status**: 🔧 Configured (requires API key)
