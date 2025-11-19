@@ -1530,6 +1530,33 @@ def admin_toggle_category(id):
     flash(f'Catégorie "{category["nom"]}" {status_text} avec succès!', 'success')
     return redirect(url_for('admin_categories'))
 
+@app.route('/admin/fedapay', methods=['GET', 'POST'])
+def admin_fedapay():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    config = {
+        'secret_key': fedapay_service.secret_key,
+        'public_key': fedapay_service.public_key,
+        'environment': fedapay_service.environment,
+        'base_url': fedapay_service.base_url,
+        'checkout_url': fedapay_service.checkout_url,
+        'is_configured': fedapay_service.is_configured()
+    }
+    
+    test_result = None
+    if request.method == 'POST' and request.form.get('test_connection'):
+        user_data = {
+            'id': 999,
+            'name': 'Test Utilisateur',
+            'email': '[email protected]',
+            'phone': '+22890000000'
+        }
+        test_result = fedapay_service.create_transaction(user_data, amount=1000, description="Test de connexion FedaPay")
+    
+    return render_template('admin_fedapay_test.html', config=config, test_result=test_result)
+
 @app.route('/admin/users')
 def admin_users():
     if 'user_id' not in session or session.get('role') != 'admin':
