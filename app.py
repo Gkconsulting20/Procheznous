@@ -214,6 +214,12 @@ def register():
             flash('Veuillez fournir un email OU un numéro de téléphone', 'error')
             return render_template('register.html', categories=categories)
         
+        # Vérifier l'acceptation des conditions d'utilisation
+        accept_conditions = request.form.get('accept_conditions')
+        if not accept_conditions:
+            flash('Vous devez accepter les conditions d\'utilisation pour vous inscrire', 'error')
+            return render_template('register.html', categories=categories)
+        
         if phone:
             if not validate_phone_number(phone):
                 flash('Numéro de téléphone invalide. Format attendu: +228XXXXXXXX ou 90XXXXXX', 'error')
