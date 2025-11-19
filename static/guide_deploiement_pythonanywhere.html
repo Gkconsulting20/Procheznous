@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide Déploiement PythonAnywhere</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .main-card { background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 1000px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 30px; border-radius: 15px 15px 0 0; text-align: center; }
+        .step { background: #f8f9fa; padding: 20px; margin: 20px; border-radius: 10px; border-left: 5px solid #dc3545; }
+        .step-number { display: inline-block; width: 40px; height: 40px; background: #dc3545; color: white; border-radius: 50%; text-align: center; line-height: 40px; font-weight: bold; font-size: 1.2rem; margin-right: 15px; }
+        .command { background: #212529; color: #28a745; padding: 15px; border-radius: 8px; font-family: monospace; margin: 10px 0; }
+        .file-box { background: #e9ecef; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; margin: 10px 0; }
+        .success-box { background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745; }
+        .warning-box { background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; }
+        .checklist-item { padding: 10px; margin: 5px 0; background: white; border-radius: 5px; cursor: pointer; }
+        .checklist-item:hover { background: #f8f9fa; }
+        .checked { background: #d4edda !important; text-decoration: line-through; opacity: 0.7; }
+        .time-badge { background: #17a2b8; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="main-card">
+        <div class="header">
+            <h1>🚀 GUIDE DE DÉPLOIEMENT</h1>
+            <h3>PythonAnywhere - Système Commercial</h3>
+            <p class="mb-0">PRO CHEZ NOUS</p>
+        </div>
+
+        <div class="p-4">
+            <div class="alert alert-info">
+                <strong>⏱️ Durée estimée :</strong> 10-15 minutes<br>
+                <strong>📋 Fichiers à transférer :</strong> 7 (4 modifiés + 3 nouveaux)<br>
+                <strong>💻 Commandes :</strong> 2
+            </div>
+
+            <!-- Liste des fichiers -->
+            <div class="step">
+                <h3><span class="step-number">📦</span>Fichiers à Préparer</h3>
+                
+                <h5 class="mt-3">Fichiers MODIFIÉS (Remplacer)</h5>
+                <div class="file-box">
+                    ✓ app.py<br>
+                    ✓ templates/base.html<br>
+                    ✓ templates/register.html<br>
+                    ✓ replit.md
+                </div>
+
+                <h5 class="mt-3">Fichiers NOUVEAUX (Créer)</h5>
+                <div class="file-box">
+                    ✓ create_commercial.py<br>
+                    ✓ templates/dashboard_commercial.html<br>
+                    ✓ templates/admin_commerciaux.html
+                </div>
+            </div>
+
+            <!-- Étapes -->
+            <div class="step">
+                <h3><span class="step-number">1</span>Connexion <span class="time-badge">1 min</span></h3>
+                <ol>
+                    <li>Allez sur <strong>https://www.pythonanywhere.com</strong></li>
+                    <li>Connectez-vous</li>
+                    <li>Cliquez sur <strong>"Files"</strong></li>
+                    <li>Naviguez vers <code>/home/gkconsulting/prochenous2/</code></li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">2</span>Copier app.py <span class="time-badge">2 min</span></h3>
+                <p><strong>Sur Replit :</strong> Ouvrez app.py → Ctrl+A → Ctrl+C</p>
+                <p><strong>Sur PythonAnywhere :</strong> Cliquez app.py → Ctrl+A → Ctrl+V → Save</p>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">3</span>Copier templates/base.html <span class="time-badge">1 min</span></h3>
+                <p><strong>Sur Replit :</strong> Copiez templates/base.html</p>
+                <p><strong>Sur PythonAnywhere :</strong> templates/base.html → Remplacer → Save</p>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">4</span>Copier templates/register.html <span class="time-badge">1 min</span></h3>
+                <p><strong>Sur Replit :</strong> Copiez templates/register.html</p>
+                <p><strong>Sur PythonAnywhere :</strong> templates/register.html → Remplacer → Save</p>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">5</span>Créer create_commercial.py <span class="time-badge">2 min</span></h3>
+                <p>New file → Nom: <code>create_commercial.py</code> → Coller contenu → Save</p>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">6</span>Créer dashboard_commercial.html <span class="time-badge">2 min</span></h3>
+                <p>templates/ → New file → <code>dashboard_commercial.html</code> → Coller → Save</p>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">7</span>Créer admin_commerciaux.html <span class="time-badge">2 min</span></h3>
+                <p>templates/ → New file → <code>admin_commerciaux.html</code> → Coller → Save</p>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">8</span>Migration Base de Données <span class="time-badge">1 min</span></h3>
+                <p>Consoles → Bash → New console</p>
+                <div class="command">
+$ cd prochenous2<br>
+$ python3 -c "from app import init_db; init_db()"
+                </div>
+                <div class="success-box">
+                    ✅ Aucune erreur = Migration réussie
+                </div>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">9</span>Redémarrer l'App <span class="time-badge">30 sec</span></h3>
+                <ol>
+                    <li>Onglet <strong>"Web"</strong></li>
+                    <li>Trouvez <strong>www.pro-chez-nous.com</strong></li>
+                    <li>Bouton vert <strong>"Reload"</strong></li>
+                    <li>Attendez 10-15 secondes</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3><span class="step-number">10</span>Créer Commercial Test <span class="time-badge">1 min</span></h3>
+                <div class="command">
+$ cd prochenous2<br>
+$ python3 create_commercial.py
+                </div>
+                <p><strong>Saisissez :</strong></p>
+                <ul>
+                    <li>Nom : Marie KOUASSI</li>
+                    <li>Email : commercial@pro-chez-nous.com</li>
+                    <li>Téléphone : +22890123456</li>
+                    <li>Password : Commercial2024!</li>
+                </ul>
+                <div class="warning-box">
+                    <strong>📝 IMPORTANT :</strong> Notez le code généré (ex: ABC12345)
+                </div>
+            </div>
+
+            <!-- Tests -->
+            <div class="alert alert-success mt-4">
+                <h4>✅ TESTS DE VÉRIFICATION</h4>
+                <hr>
+                
+                <h5>Test 1 : Connexion Commercial</h5>
+                <ul>
+                    <li>URL : www.pro-chez-nous.com/login</li>
+                    <li>Email : commercial@pro-chez-nous.com</li>
+                    <li>Password : Commercial2024!</li>
+                    <li>→ Dashboard commercial doit s'afficher</li>
+                </ul>
+
+                <h5>Test 2 : Menu Simplifié</h5>
+                <ul>
+                    <li>Vous devez voir seulement 3 onglets :</li>
+                    <li>📊 Mes Statistiques</li>
+                    <li>⚙️ Paramètres</li>
+                    <li>🚪 Déconnexion</li>
+                </ul>
+
+                <h5>Test 3 : Lien de Parrainage</h5>
+                <ul>
+                    <li>Copiez : www.pro-chez-nous.com/register?ref=ABC12345</li>
+                    <li>Navigation privée → Inscrivez un user test</li>
+                    <li>Reconnectez-vous au dashboard commercial</li>
+                    <li>→ Stats : +1 inscrit</li>
+                </ul>
+            </div>
+
+            <!-- Checklist finale -->
+            <div class="step">
+                <h3>📋 Checklist Finale</h3>
+                <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                    ☐ Tous les fichiers uploadés (7 fichiers)
+                </div>
+                <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                    ☐ Migration DB appliquée
+                </div>
+                <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                    ☐ Application redémarrée (Reload)
+                </div>
+                <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                    ☐ Commercial de test créé
+                </div>
+                <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                    ☐ Connexion commercial testée
+                </div>
+                <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                    ☐ Menu simplifié vérifié (3 onglets)
+                </div>
+                <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                    ☐ Dashboard commercial fonctionne
+                </div>
+                <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                    ☐ Lien de parrainage testé
+                </div>
+                <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                    ☐ Panel admin/commerciaux accessible
+                </div>
+            </div>
+
+            <div class="text-center mt-4 mb-4">
+                <h2 style="color: #28a745;">🎉 DÉPLOIEMENT TERMINÉ !</h2>
+                <p class="lead">Le système commercial est opérationnel sur PythonAnywhere</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
