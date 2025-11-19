@@ -279,6 +279,10 @@ def register():
     
     return render_template('register.html', categories=categories, ref_code=ref_code)
 
+@app.route('/conditions')
+def conditions():
+    return render_template('conditions.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
