@@ -52,7 +52,7 @@ class FedaPayService:
                 "customer": {
                     "firstname": user_data.get('name', '').split()[0] if user_data.get('name') else "Client",
                     "lastname": user_data.get('name', '').split()[-1] if user_data.get('name') and len(user_data.get('name', '').split()) > 1 else "PCN",
-                    "email": user_data.get('email', f"user{user_data.get('id')}@prochesnous.fr"),
+                    "email": user_data.get('email') if user_data.get('email') else f"user{user_data.get('id')}@pro-chez-nous.com",
                 }
             }
             
