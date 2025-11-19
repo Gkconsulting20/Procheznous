@@ -23,6 +23,13 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         {% if 'user_id' in session %}
+            {% if session.role == 'commercial' %}
+            <!-- MENU SIMPLIFIÉ POUR COMMERCIAUX -->
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">📊 Mes Statistiques</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('parametres') }}">⚙️ Paramètres</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">🚪 Déconnexion</a></li>
+            {% else %}
+            <!-- MENU POUR CLIENTS, PROS ET ADMINS -->
             <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">📊 Tableau de bord</a></li>
             {% if session.role == 'user' %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('view_professionals') }}">👥 Professionnels</a></li>
@@ -54,6 +61,7 @@
             </li>
             {% endif %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">🚪 Déconnexion</a></li>
+            {% endif %}
         {% else %}
             <li class="nav-item"><a class="nav-link" href="{{ url_for('view_professionals') }}">👥 Professionnels</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">🔐 Connexion</a></li>

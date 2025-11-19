@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparaison Menus - PRO CHEZ NOUS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .menu-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .menu-item {
+            padding: 12px 20px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #dc3545;
+            border-radius: 4px;
+            font-size: 1.1rem;
+        }
+        .menu-item.removed {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        .menu-item.kept {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        h2 {
+            color: #dc3545;
+            border-bottom: 3px solid #dc3545;
+            padding-bottom: 10px;
+        }
+        .badge-removed {
+            background: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        .badge-kept {
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 style="color: #dc3545;">🔍 COMPARAISON DES MENUS</h1>
+            <p class="lead">Différence entre le menu COMMERCIAL et les autres rôles</p>
+        </div>
+
+        <div class="row">
+            <!-- COMMERCIAL -->
+            <div class="col-md-4">
+                <div class="menu-card">
+                    <h2>👔 COMMERCIAL</h2>
+                    <p><strong>Menu Simplifié</strong></p>
+                    
+                    <div class="menu-item kept">
+                        📊 Mes Statistiques
+                        <span class="badge-kept">✓ Gardé</span>
+                    </div>
+                    
+                    <div class="menu-item kept">
+                        ⚙️ Paramètres
+                        <span class="badge-kept">✓ Gardé</span>
+                    </div>
+                    
+                    <div class="menu-item kept">
+                        🚪 Déconnexion
+                        <span class="badge-kept">✓ Gardé</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h5 class="text-danger mt-4">❌ Supprimé du Menu:</h5>
+                    
+                    <div class="menu-item removed">
+                        👥 Professionnels
+                        <span class="badge-removed">✗ Supprimé</span>
+                    </div>
+                    
+                    <div class="menu-item removed">
+                        ⭐ Favoris
+                        <span class="badge-removed">✗ Supprimé</span>
+                    </div>
+                    
+                    <div class="menu-item removed">
+                        💬 Messages
+                        <span class="badge-removed">✗ Supprimé</span>
+                    </div>
+                    
+                    <div class="menu-item removed">
+                        📝 Devis
+                        <span class="badge-removed">✗ Supprimé</span>
+                    </div>
+                    
+                    <div class="menu-item removed">
+                        💎 Abonnement
+                        <span class="badge-removed">✗ Supprimé</span>
+                    </div>
+                    
+                    <div class="menu-item removed">
+                        🔐 Vérification
+                        <span class="badge-removed">✗ Supprimé</span>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <strong>💡 Pourquoi ?</strong><br>
+                        Le commercial ne peut pas utiliser les fonctionnalités de la plateforme.
+                        Son rôle est uniquement de recruter et suivre ses statistiques.
+                    </div>
+                </div>
+            </div>
+
+            <!-- CLIENT -->
+            <div class="col-md-4">
+                <div class="menu-card">
+                    <h2>👤 CLIENT</h2>
+                    <p><strong>Menu Complet</strong></p>
+                    
+                    <div class="menu-item">📊 Tableau de bord</div>
+                    <div class="menu-item">👥 Professionnels</div>
+                    <div class="menu-item">⭐ Favoris <small>(Premium)</small></div>
+                    <div class="menu-item">💬 Messages <small>(Premium)</small></div>
+                    <div class="menu-item">📝 Devis <small>(Premium)</small></div>
+                    <div class="menu-item">⚙️ Paramètres</div>
+                    <div class="menu-item">💎 Abonnement</div>
+                    <div class="menu-item">🚪 Déconnexion</div>
+                    
+                    <div class="alert alert-success mt-3">
+                        <strong>✓ Le client peut :</strong><br>
+                        • Chercher des pros<br>
+                        • Réserver des RDV<br>
+                        • Demander des devis<br>
+                        • Noter les pros<br>
+                        • Envoyer des messages
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFESSIONNEL -->
+            <div class="col-md-4">
+                <div class="menu-card">
+                    <h2>🔧 PROFESSIONNEL</h2>
+                    <p><strong>Menu Complet</strong></p>
+                    
+                    <div class="menu-item">📊 Tableau de bord</div>
+                    <div class="menu-item">🔐 Vérification</div>
+                    <div class="menu-item">💬 Messages <small>(Premium)</small></div>
+                    <div class="menu-item">📝 Devis <small>(Premium)</small></div>
+                    <div class="menu-item">⚙️ Paramètres</div>
+                    <div class="menu-item">💎 Abonnement</div>
+                    <div class="menu-item">🚪 Déconnexion</div>
+                    
+                    <div class="alert alert-success mt-3">
+                        <strong>✓ Le pro peut :</strong><br>
+                        • Gérer ses créneaux<br>
+                        • Recevoir des RDV<br>
+                        • Envoyer des devis<br>
+                        • Gérer son profil<br>
+                        • Recevoir des messages
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-card mt-5">
+            <h2>📋 Résumé des Changements</h2>
+            
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Fonctionnalité</th>
+                        <th>Client</th>
+                        <th>Professionnel</th>
+                        <th>Commercial</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>📊 Tableau de bord</td>
+                        <td><span class="badge bg-success">✓ Oui</span></td>
+                        <td><span class="badge bg-success">✓ Oui</span></td>
+                        <td><span class="badge bg-success">✓ Oui (Stats)</span></td>
+                    </tr>
+                    <tr>
+                        <td>👥 Professionnels</td>
+                        <td><span class="badge bg-success">✓ Oui</span></td>
+                        <td><span class="badge bg-secondary">- Non</span></td>
+                        <td><span class="badge bg-danger">✗ Non</span></td>
+                    </tr>
+                    <tr>
+                        <td>⭐ Favoris</td>
+                        <td><span class="badge bg-warning">Premium</span></td>
+                        <td><span class="badge bg-secondary">- Non</span></td>
+                        <td><span class="badge bg-danger">✗ Non</span></td>
+                    </tr>
+                    <tr>
+                        <td>💬 Messages</td>
+                        <td><span class="badge bg-warning">Premium</span></td>
+                        <td><span class="badge bg-warning">Premium</span></td>
+                        <td><span class="badge bg-danger">✗ Non</span></td>
+                    </tr>
+                    <tr>
+                        <td>📝 Devis</td>
+                        <td><span class="badge bg-warning">Premium</span></td>
+                        <td><span class="badge bg-warning">Premium</span></td>
+                        <td><span class="badge bg-danger">✗ Non</span></td>
+                    </tr>
+                    <tr>
+                        <td>🔐 Vérification</td>
+                        <td><span class="badge bg-secondary">- Non</span></td>
+                        <td><span class="badge bg-success">✓ Oui</span></td>
+                        <td><span class="badge bg-danger">✗ Non</span></td>
+                    </tr>
+                    <tr>
+                        <td>💎 Abonnement</td>
+                        <td><span class="badge bg-success">✓ Oui</span></td>
+                        <td><span class="badge bg-success">✓ Oui</span></td>
+                        <td><span class="badge bg-danger">✗ Non</span></td>
+                    </tr>
+                    <tr>
+                        <td>⚙️ Paramètres</td>
+                        <td><span class="badge bg-success">✓ Oui</span></td>
+                        <td><span class="badge bg-success">✓ Oui</span></td>
+                        <td><span class="badge bg-success">✓ Oui</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert alert-warning mt-4">
+            <h5>⚠️ Important pour le Déploiement</h5>
+            <p>N'oubliez pas de <strong>remplacer templates/base.html</strong> sur PythonAnywhere avec cette nouvelle version pour appliquer les changements de menu.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
