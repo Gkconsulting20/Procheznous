@@ -183,6 +183,10 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     categories = get_categories()
+    
+    # Capturer le code commercial depuis l'URL (?ref=CODE12345)
+    ref_code = request.args.get('ref', '').strip().upper()
+    
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
         email = request.form.get('email', '').strip()
@@ -192,6 +196,9 @@ def register():
         localisation = request.form.get('localisation', '').strip()
         pays = request.form.get('pays', 'Togo').strip()
         categorie = request.form.get('categorie', '').strip() if role == 'pro' else None
+        
+        # Récupérer le code commercial depuis le formulaire (champ caché)
+        ref_code = request.form.get('ref_code', '').strip().upper()
         
         latitude = request.form.get('latitude', '').strip()
         longitude = request.form.get('longitude', '').strip()
@@ -229,6 +236,16 @@ def register():
         
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         
+        # Vérifier si un code commercial a été fourni
+        commercial_id = None
+        if ref_code:
+            commercial = conn.execute(
+                'SELECT id, name FROM users WHERE code_commercial = ? AND role = "commercial"',
+                (ref_code,)
+            ).fetchone()
+            if commercial:
+                commercial_id = commercial['id']
+        
         # 🎁 OFFRE DE LANCEMENT : 1 mois Premium gratuit pour tous les nouveaux inscrits
         from datetime import datetime, timedelta
         now = datetime.now()
@@ -237,19 +254,24 @@ def register():
         conn.execute('''
             INSERT INTO users 
             (name, email, phone, password, role, localisation, pays, categorie, 
-             latitude, longitude,
+             latitude, longitude, commercial_id,
              plan, subscription_started_at, subscription_expires_at, subscription_status) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'premium', ?, ?, 'trial')
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'premium', ?, ?, 'trial')
         ''', (name, email if email else None, phone if phone else None, hashed_password, 
               role, localisation, pays, categorie,
-              latitude, longitude,
+              latitude, longitude, commercial_id,
               now.strftime('%Y-%m-%d %H:%M:%S'),
               trial_end.strftime('%Y-%m-%d %H:%M:%S')))
         
         conn.commit()
-        flash('🎉 Inscription réussie! Profitez de 1 mois Premium GRATUIT pour découvrir toutes les fonctionnalités! 🌟', 'success')
+        
+        success_msg = '🎉 Inscription réussie! Profitez de 1 mois Premium GRATUIT pour découvrir toutes les fonctionnalités! 🌟'
+        if commercial_id:
+            success_msg += f' (Parrainé par un commercial)'
+        flash(success_msg, 'success')
         return redirect(url_for('login'))
-    return render_template('register.html', categories=categories)
+    
+    return render_template('register.html', categories=categories, ref_code=ref_code)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -293,7 +315,80 @@ def dashboard():
     if 'user_id' not in session: return redirect(url_for('login'))
     conn = get_db()
     user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
-    if user['role'] == 'pro':
+    
+    if user['role'] == 'commercial':
+        # Dashboard commercial avec statistiques
+        stats = {
+            'total_inscrits': 0,
+            'total_clients': 0,
+            'total_pros': 0,
+            'clients_premium': 0,
+            'pros_premium': 0,
+            'taux_conversion': 0,
+            'revenus_estimes': 0
+        }
+        
+        # Compter les inscrits par ce commercial
+        total = conn.execute('''
+            SELECT COUNT(*) as count FROM users 
+            WHERE commercial_id = ? AND role != 'commercial'
+        ''', (user['id'],)).fetchone()
+        stats['total_inscrits'] = total['count'] if total else 0
+        
+        # Compter les clients
+        clients = conn.execute('''
+            SELECT COUNT(*) as count FROM users 
+            WHERE commercial_id = ? AND role = 'user'
+        ''', (user['id'],)).fetchone()
+        stats['total_clients'] = clients['count'] if clients else 0
+        
+        # Compter les professionnels
+        pros = conn.execute('''
+            SELECT COUNT(*) as count FROM users 
+            WHERE commercial_id = ? AND role = 'pro'
+        ''', (user['id'],)).fetchone()
+        stats['total_pros'] = pros['count'] if pros else 0
+        
+        # Compter les clients Premium (payants, pas en trial)
+        clients_premium = conn.execute('''
+            SELECT COUNT(*) as count FROM users 
+            WHERE commercial_id = ? AND role = 'user' 
+            AND plan = 'premium' AND subscription_status = 'active'
+        ''', (user['id'],)).fetchone()
+        stats['clients_premium'] = clients_premium['count'] if clients_premium else 0
+        
+        # Compter les pros Premium (payants, pas en trial)
+        pros_premium = conn.execute('''
+            SELECT COUNT(*) as count FROM users 
+            WHERE commercial_id = ? AND role = 'pro' 
+            AND plan = 'premium' AND subscription_status = 'active'
+        ''', (user['id'],)).fetchone()
+        stats['pros_premium'] = pros_premium['count'] if pros_premium else 0
+        
+        # Calculer taux de conversion (trial → payant)
+        total_premium = stats['clients_premium'] + stats['pros_premium']
+        if stats['total_inscrits'] > 0:
+            stats['taux_conversion'] = round((total_premium / stats['total_inscrits']) * 100, 1)
+        
+        # Estimer les revenus (1000 FCFA/mois par Premium payant)
+        stats['revenus_estimes'] = total_premium * 1000
+        
+        # Liste des derniers inscrits
+        derniers_inscrits = conn.execute('''
+            SELECT id, name, email, phone, role, localisation, plan, subscription_status,
+                   subscription_started_at
+            FROM users
+            WHERE commercial_id = ? AND role != 'commercial'
+            ORDER BY id DESC
+            LIMIT 20
+        ''', (user['id'],)).fetchall()
+        
+        return render_template('dashboard_commercial.html', 
+                             user=user, 
+                             stats=stats, 
+                             inscrits=derniers_inscrits)
+    
+    elif user['role'] == 'pro':
         rdvs = conn.execute('''
             SELECT r.id, s.date, s.heure, u.name as client, u.email as client_email, u.phone as client_phone
             FROM rendezvous r
@@ -1687,6 +1782,18 @@ def init_db():
         pass
     try:
         conn.execute('ALTER TABLE users ADD COLUMN statut_compte TEXT DEFAULT "actif"')
+        conn.commit()
+    except:
+        pass
+    
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN commercial_id INTEGER')
+        conn.commit()
+    except:
+        pass
+    
+    try:
+        conn.execute('ALTER TABLE users ADD COLUMN code_commercial TEXT UNIQUE')
         conn.commit()
     except:
         pass

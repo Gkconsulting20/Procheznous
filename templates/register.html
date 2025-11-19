@@ -9,7 +9,16 @@
             <strong>📱 Nouveau !</strong> Vous pouvez vous inscrire avec votre email OU votre numéro de téléphone.
         </div>
         
+        {% if ref_code %}
+        <div class="alert alert-success">
+            <strong>✅ Code commercial détecté !</strong> Votre inscription sera liée à un commercial partenaire.
+        </div>
+        {% endif %}
+        
         <form method="post" id="registerForm">
+            <!-- Champ caché pour le code commercial -->
+            <input type="hidden" name="ref_code" value="{{ ref_code if ref_code else '' }}">
+            
             <div class="mb-3">
                 <label for="name" class="form-label">Nom / Pseudo *</label>
                 <input class="form-control" type="text" name="name" id="name" placeholder="Votre nom" required>
