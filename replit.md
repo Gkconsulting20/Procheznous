@@ -46,7 +46,7 @@ PRO CHEZ NOUS is a French professional appointment booking platform designed for
 - **Password Recovery**: Users can reset forgotten passwords via secure token system (demo version displays link directly, production ready for email integration).
 
 ### Database Schema Highlights
-- `users`: Stores user data including email OR phone number (flexible authentication), role, location, plan, verification status, and GPS coordinates.
+- `users`: Stores user data including email OR phone number (flexible authentication), role, location, plan, verification status, GPS coordinates, commercial_id (tracks which sales rep referred the user), and code_commercial (unique referral code for sales reps).
 - `slots`, `rendezvous`: Manages available and booked appointments.
 - `avis`: Stores client ratings and reviews.
 - `profils_pro`: Extends professional profiles for premium users.
@@ -68,6 +68,23 @@ The platform features a **dynamic category management system**. Administrators c
 - **SendGrid API**: Email delivery service for password reset and notifications (optional).
 - **Twilio API**: SMS service for phone verification (optional).
 - **Requests**: HTTP library for API integrations.
+
+## Recent Changes (November 19, 2025)
+
+### Sales Representative (Commercial) Tracking System
+- **Status**: ✅ Implemented & Tested
+- **Change**: Complete tracking system for sales representatives with referral codes and performance metrics
+- **Files**: `app.py`, `create_commercial.py`, `templates/dashboard_commercial.html`, `templates/admin_commerciaux.html`, `templates/base.html`, `templates/register.html`
+- **Features**:
+  - Database columns: `commercial_id` (INTEGER), `code_commercial` (TEXT with unique index)
+  - Script `create_commercial.py` to create commercial accounts with auto-generated 8-character referral codes
+  - Unique referral links: `/register?ref=CODE12345` automatically tracks signups to commercial
+  - Commercial dashboard showing: total signups, clients vs pros breakdown, premium conversions, revenue tracking
+  - Admin panel page `/admin/commerciaux` with global statistics and performance table for all sales reps
+  - Referral code normalization (.upper()) to handle case-insensitive URL parameters
+- **Security**: Commercial role verification, admin-only access to global reports
+- **Migration**: Safe deployment approach using ALTER TABLE + CREATE UNIQUE INDEX (compatible with PythonAnywhere)
+- **Usage**: Run `python create_commercial.py` to create sales representative accounts
 
 ## Recent Changes (November 01, 2025)
 

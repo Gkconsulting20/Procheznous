@@ -1858,7 +1858,13 @@ def init_db():
         pass
     
     try:
-        conn.execute('ALTER TABLE users ADD COLUMN code_commercial TEXT UNIQUE')
+        conn.execute('ALTER TABLE users ADD COLUMN code_commercial TEXT')
+        conn.commit()
+    except:
+        pass
+    
+    try:
+        conn.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_code_commercial ON users(code_commercial) WHERE code_commercial IS NOT NULL')
         conn.commit()
     except:
         pass
