@@ -238,6 +238,13 @@
                 </div>
             </div>
             
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="acceptConditions" name="accept_conditions" required>
+                <label class="form-check-label" for="acceptConditions">
+                    J'accepte les <a href="{{ url_for('conditions') }}" target="_blank" class="text-danger">conditions d'utilisation</a> *
+                </label>
+            </div>
+            
             <button class="btn btn-success w-100 mb-3" type="submit">S'inscrire</button>
             
             <div class="text-center">
