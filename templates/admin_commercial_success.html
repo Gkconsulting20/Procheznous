@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow border-success">
+                <div class="card-header bg-success text-white text-center">
+                    <h2 class="mb-0">
+                        <i class="fas fa-check-circle"></i> Commercial Créé avec Succès !
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <h4><i class="fas fa-user"></i> {{ commercial.name }}</h4>
+                        <p class="mb-0">
+                            <strong>Email:</strong> {{ commercial.email }}<br>
+                            <strong>Téléphone:</strong> {{ commercial.phone }}<br>
+                            <strong>Code de parrainage:</strong> <span class="badge bg-danger fs-5">{{ commercial.code }}</span>
+                        </p>
+                    </div>
+
+                    <div class="card border-danger mb-4">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0"><i class="fas fa-link"></i> Lien de Parrainage</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">Partagez ce lien avec {{ commercial.name }} pour qu'il puisse recruter des utilisateurs :</p>
+                            
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control form-control-lg" 
+                                       id="lien-parrainage" 
+                                       value="{{ lien }}" 
+                                       readonly>
+                                <button class="btn btn-danger" type="button" onclick="copierLien()">
+                                    <i class="fas fa-copy"></i> Copier
+                                </button>
+                            </div>
+
+                            <div id="copie-confirmation" class="alert alert-success d-none">
+                                <i class="fas fa-check"></i> Lien copié ! Vous pouvez maintenant le partager.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-info mb-3">
+                                <div class="card-header bg-info text-white">
+                                    <i class="fas fa-share-alt"></i> Comment partager ?
+                                </div>
+                                <div class="card-body">
+                                    <ol class="mb-0">
+                                        <li>Cliquez sur <strong>"Copier"</strong> ci-dessus</li>
+                                        <li>Envoyez le lien par <strong>WhatsApp, Email, SMS</strong></li>
+                                        <li>Toute inscription via ce lien sera attribuée à {{ commercial.name }}</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card border-warning mb-3">
+                                <div class="card-header bg-warning">
+                                    <i class="fas fa-user-shield"></i> Identifiants de Connexion
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Email:</strong> {{ commercial.email }}</p>
+                                    <p><strong>Mot de passe:</strong> <span class="badge bg-secondary">Le mot de passe que vous avez saisi</span></p>
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-info-circle"></i> 
+                                        Communiquez ces identifiants au commercial de manière sécurisée.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <i class="fas fa-chart-line"></i> Suivi des Performances
+                        </div>
+                        <div class="card-body">
+                            <p>Le commercial pourra suivre ses statistiques en temps réel :</p>
+                            <ul>
+                                <li><strong>Dashboard commercial</strong> : Nombre d'inscrits, clients vs pros, conversions premium</li>
+                                <li><strong>Revenus générés</strong> : Calcul automatique basé sur les abonnements premium</li>
+                                <li><strong>Taux de conversion</strong> : Pourcentage de conversion gratuit → premium</li>
+                            </ul>
+                            <p class="mb-0">
+                                <i class="fas fa-eye"></i> Vous pouvez consulter ses stats dans 
+                                <a href="{{ url_for('admin_commerciaux') }}"><strong>Admin → Commerciaux</strong></a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('admin_creer_commercial') }}" class="btn btn-danger btn-lg">
+                            <i class="fas fa-plus"></i> Créer un Autre Commercial
+                        </a>
+                        <a href="{{ url_for('admin_commerciaux') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-list"></i> Voir Tous les Commerciaux
+                        </a>
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour au Dashboard Admin
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copierLien() {
+    const input = document.getElementById('lien-parrainage');
+    input.select();
+    input.setSelectionRange(0, 99999); // Pour mobile
+    
+    navigator.clipboard.writeText(input.value).then(function() {
+        // Afficher confirmation
+        const confirmation = document.getElementById('copie-confirmation');
+        confirmation.classList.remove('d-none');
+        
+        // Masquer après 3 secondes
+        setTimeout(function() {
+            confirmation.classList.add('d-none');
+        }, 3000);
+    }).catch(function() {
+        // Fallback pour navigateurs anciens
+        document.execCommand('copy');
+        alert('Lien copié !');
+    });
+}
+</script>
+{% endblock %}

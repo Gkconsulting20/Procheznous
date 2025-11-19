@@ -3,12 +3,15 @@
 {% block content %}
 
 <div class="row mb-4">
-    <div class="col-md-8">
+    <div class="col-md-6">
         <h2>👔 Gestion des Commerciaux</h2>
     </div>
-    <div class="col-md-4 text-end">
+    <div class="col-md-6 text-end">
+        <a href="{{ url_for('admin_creer_commercial') }}" class="btn btn-danger me-2">
+            <i class="fas fa-plus"></i> Créer un Commercial
+        </a>
         <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">
-            ← Retour Utilisateurs
+            ← Retour
         </a>
     </div>
 </div>
@@ -69,6 +72,7 @@
                         <th>Nom</th>
                         <th>Contact</th>
                         <th>Code</th>
+                        <th>Lien Parrainage</th>
                         <th>Total</th>
                         <th>Clients</th>
                         <th>Pros</th>
@@ -93,6 +97,16 @@
                         </td>
                         <td>
                             <code class="bg-light p-1 rounded">{{ commercial['code'] }}</code>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-sm btn-outline-danger" 
+                                        onclick="copierLienParrainage('{{ request.host_url }}register?ref={{ commercial['code'] }}', this)"
+                                        title="Copier le lien de parrainage">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <small class="align-self-center">{{ commercial['code'] }}</small>
+                            </div>
                         </td>
                         <td>
                             <span class="badge bg-primary">{{ commercial['total_inscrits'] }}</span>
@@ -129,7 +143,7 @@
                 </tbody>
                 <tfoot>
                     <tr class="table-light fw-bold">
-                        <td colspan="4" class="text-end">TOTAL:</td>
+                        <td colspan="5" class="text-end">TOTAL:</td>
                         <td><span class="badge bg-primary">{{ total_inscrits_global }}</span></td>
                         <td><span class="badge bg-info">{{ commerciaux|sum(attribute='clients') }}</span></td>
                         <td><span class="badge bg-warning">{{ commerciaux|sum(attribute='pros') }}</span></td>
@@ -148,21 +162,48 @@
             </table>
         </div>
         {% else %}
-        <div class="alert alert-info">
-            <strong>ℹ️ Aucun commercial enregistré</strong><br>
-            Utilisez le script <code>python create_commercial.py</code> pour créer un compte commercial.
+        <div class="alert alert-info text-center">
+            <h5><strong>ℹ️ Aucun commercial enregistré</strong></h5>
+            <p>Créez votre premier commercial en cliquant sur le bouton ci-dessous :</p>
+            <a href="{{ url_for('admin_creer_commercial') }}" class="btn btn-danger">
+                <i class="fas fa-plus"></i> Créer un Commercial
+            </a>
         </div>
         {% endif %}
     </div>
 </div>
 
-<div class="mt-4 alert alert-light">
-    <h6><strong>💡 Comment créer un commercial :</strong></h6>
-    <p class="mb-0">
-        1. Ouvrez un terminal<br>
-        2. Exécutez : <code>python create_commercial.py</code><br>
-        3. Suivez les instructions pour créer un compte commercial
-    </p>
+<div class="mt-4 alert alert-success">
+    <h6><strong>💡 Comment ça marche :</strong></h6>
+    <ul class="mb-0">
+        <li>Cliquez sur <strong>"Créer un Commercial"</strong> pour ajouter un nouveau commercial</li>
+        <li>Le système génère automatiquement un <strong>code de parrainage unique</strong></li>
+        <li>Copiez le <strong>lien de parrainage</strong> et partagez-le avec le commercial</li>
+        <li>Toute inscription via ce lien sera <strong>automatiquement attribuée</strong> au commercial</li>
+        <li>Les statistiques sont mises à jour <strong>en temps réel</strong></li>
+    </ul>
 </div>
+
+<script>
+function copierLienParrainage(lien, bouton) {
+    navigator.clipboard.writeText(lien).then(function() {
+        // Changer l'icône temporairement
+        const icone = bouton.querySelector('i');
+        const iconeOriginale = icone.className;
+        icone.className = 'fas fa-check';
+        bouton.classList.remove('btn-outline-danger');
+        bouton.classList.add('btn-success');
+        
+        // Restaurer après 2 secondes
+        setTimeout(function() {
+            icone.className = iconeOriginale;
+            bouton.classList.remove('btn-success');
+            bouton.classList.add('btn-outline-danger');
+        }, 2000);
+    }).catch(function(err) {
+        alert('Erreur lors de la copie : ' + err);
+    });
+}
+</script>
 
 {% endblock %}

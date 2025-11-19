@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-plus"></i> Créer un Commercial
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('admin_creer_commercial') }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-user"></i> Nom Complet *
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" required
+                                   placeholder="Ex: Marie KOUASSI">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope"></i> Email *
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" required
+                                   placeholder="commercial@example.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">
+                                <i class="fas fa-phone"></i> Téléphone *
+                            </label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required
+                                   placeholder="+228 90 12 34 56">
+                            <small class="text-muted">Format: +228XXXXXXXX (avec indicatif pays)</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock"></i> Mot de Passe *
+                            </label>
+                            <input type="password" class="form-control" id="password" name="password" required
+                                   minlength="6" placeholder="Minimum 6 caractères">
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> <strong>Informations automatiques :</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Un <strong>code de parrainage unique</strong> sera généré automatiquement</li>
+                                <li>Le commercial aura un <strong>abonnement Premium à vie</strong></li>
+                                <li>Le lien de parrainage sera affiché après la création</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="fas fa-check"></i> Créer le Commercial
+                            </button>
+                            <a href="{{ url_for('admin_commerciaux') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow mt-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-question-circle"></i> Comment ça marche ?</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li><strong>Remplissez le formulaire</strong> ci-dessus avec les informations du commercial</li>
+                        <li>Un <strong>code de parrainage unique</strong> (8 caractères) sera généré automatiquement</li>
+                        <li>Le <strong>lien de parrainage</strong> sera créé et affiché sur la page suivante</li>
+                        <li>Le commercial peut <strong>partager ce lien</strong> avec ses prospects</li>
+                        <li>Toute inscription via ce lien sera <strong>automatiquement attribuée</strong> au commercial</li>
+                        <li>Les statistiques seront <strong>mises à jour en temps réel</strong></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

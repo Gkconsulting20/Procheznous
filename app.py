@@ -1755,6 +1755,73 @@ def admin_commerciaux():
     
     return render_template('admin_commerciaux.html', commerciaux=commerciaux_stats)
 
+@app.route('/admin/commercial/nouveau', methods=['GET', 'POST'])
+def admin_creer_commercial():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Accès refusé. Vous devez être administrateur.', 'error')
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+        password = request.form.get('password', '').strip()
+        
+        # Validation
+        if not all([name, email, phone, password]):
+            flash('Tous les champs sont obligatoires', 'error')
+            return render_template('admin_commercial_form.html')
+        
+        # Validation email
+        import re
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            flash('Email invalide', 'error')
+            return render_template('admin_commercial_form.html')
+        
+        # Validation mot de passe
+        if len(password) < 6:
+            flash('Le mot de passe doit contenir au moins 6 caractères', 'error')
+            return render_template('admin_commercial_form.html')
+        
+        conn = get_db()
+        
+        # Vérifier si email existe déjà
+        existing = conn.execute('SELECT id FROM users WHERE email = ?', (email,)).fetchone()
+        if existing:
+            flash('Cet email est déjà utilisé', 'error')
+            return render_template('admin_commercial_form.html')
+        
+        # Générer un code commercial unique (8 caractères)
+        import random
+        import string
+        while True:
+            code_commercial = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+            existing_code = conn.execute('SELECT id FROM users WHERE code_commercial = ?', (code_commercial,)).fetchone()
+            if not existing_code:
+                break
+        
+        # Hasher le mot de passe
+        import bcrypt
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        
+        # Créer le commercial
+        conn.execute('''
+            INSERT INTO users (name, email, phone, password, role, plan, code_commercial, statut_compte)
+            VALUES (?, ?, ?, ?, 'commercial', 'premium', ?, 'actif')
+        ''', (name, email, phone, hashed.decode('utf-8'), code_commercial))
+        conn.commit()
+        
+        # Générer le lien de parrainage
+        base_url = request.host_url.rstrip('/')
+        lien_parrainage = f"{base_url}/register?ref={code_commercial}"
+        
+        flash(f'Commercial {name} créé avec succès!', 'success')
+        return render_template('admin_commercial_success.html', 
+                             commercial={'name': name, 'email': email, 'phone': phone, 'code': code_commercial},
+                             lien=lien_parrainage)
+    
+    return render_template('admin_commercial_form.html')
+
 def init_db():
     conn = get_db()
     conn.executescript('''
