@@ -1,0 +1,76 @@
+═══════════════════════════════════════════════════════════════
+  FICHIERS À DÉPLOYER SUR PYTHONANYWHERE - Novembre 2025
+═══════════════════════════════════════════════════════════════
+
+📦 TOTAL : 5 fichiers MODIFIÉS + 2 fichiers NOUVEAUX
+
+──────────────────────────────────────────────────────────────
+  1️⃣ FICHIERS MODIFIÉS (à remplacer sur PythonAnywhere)
+──────────────────────────────────────────────────────────────
+
+✓ app.py
+  → Route /conditions ajoutée (ligne 285-287)
+  → Route /admin/fedapay ajoutée (ligne 1536-1561)
+  → Validation conditions d'utilisation dans /register
+
+✓ fedapay_service.py
+  → Correction format email (ligne 58)
+
+✓ templates/base.html
+  → Menu Admin → FedaPay ajouté (ligne 63-64)
+
+✓ templates/register.html
+  → Checkbox conditions d'utilisation ajoutée (avant bouton soumission)
+  → Lien vers /conditions
+
+✓ replit.md
+  → Statut FedaPay mis à jour (ligne 146-158)
+
+──────────────────────────────────────────────────────────────
+  2️⃣ FICHIERS NOUVEAUX (à créer sur PythonAnywhere)
+──────────────────────────────────────────────────────────────
+
+✓ templates/conditions.html
+  → Page complète des conditions d'utilisation
+  → 9 sections juridiques
+
+✓ templates/admin_fedapay_test.html
+  → Page de diagnostic FedaPay pour admin
+  → Test de connexion intégré
+  → Guide de configuration
+
+──────────────────────────────────────────────────────────────
+  3️⃣ SECRETS À CONFIGURER (Environment Variables)
+──────────────────────────────────────────────────────────────
+
+FEDAPAY_SECRET_KEY = sk_live_votre_clé_ici
+FEDAPAY_PUBLIC_KEY = pk_live_votre_clé_ici
+FEDAPAY_ENV = live
+
+──────────────────────────────────────────────────────────────
+  4️⃣ ORDRE DE DÉPLOIEMENT RECOMMANDÉ
+──────────────────────────────────────────────────────────────
+
+1. Remplacer app.py
+2. Remplacer fedapay_service.py
+3. Remplacer templates/base.html
+4. Remplacer templates/register.html
+5. Créer templates/conditions.html
+6. Créer templates/admin_fedapay_test.html
+7. Configurer les 3 secrets
+8. Cliquer sur "Reload" (bouton vert)
+9. Tester !
+
+──────────────────────────────────────────────────────────────
+  ✅ TESTS À FAIRE APRÈS DÉPLOIEMENT
+──────────────────────────────────────────────────────────────
+
+□ Page d'accueil charge correctement
+□ Inscription avec checkbox conditions fonctionne
+□ Page /conditions s'affiche
+□ Connexion admin possible
+□ Menu Admin → FedaPay visible
+□ Page diagnostic FedaPay s'affiche
+□ Configuration FedaPay détectée (environnement = live)
+
+═══════════════════════════════════════════════════════════════
