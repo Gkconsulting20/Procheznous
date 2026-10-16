@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify
 from werkzeug.utils import secure_filename
 import sqlite3
-import bcrypt
 import os
 import secrets
 from datetime import datetime, timedelta
 from functools import wraps
+from database import connect_database
+from password_hashing import check_password, hash_password
 from utils import normalize_phone_number, validate_phone_number, format_phone_display
 from fedapay_service import fedapay_service
 from email_service import email_service
@@ -24,18 +25,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_db():
-    # Chemin absolu pour PythonAnywhere
-    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.db')
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
-    
-    # OPTIMISATIONS PRODUCTION
-    conn.execute("PRAGMA journal_mode = WAL")      # Lecture/Écriture simultanées
-    conn.execute("PRAGMA synchronous = NORMAL")    # Balance vitesse/sécurité
-    conn.execute("PRAGMA cache_size = -64000")     # Cache 64MB
-    conn.execute("PRAGMA temp_store = MEMORY")     # Stockage RAM
-    
-    return conn
+    return connect_database()
 
 def get_categories():
     """Récupère les catégories actives depuis la base de données"""
